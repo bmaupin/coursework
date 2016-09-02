@@ -12,8 +12,45 @@
 
 import stanford.karel.*;
 
+/* Note: this fails if the world is only one street wide. I'm not sure if that's 
+ * permissible or not.
+ */
 public class MidpointFindingKarel extends SuperKarel {
-
-	// You fill in this part
-
+	public void run() {
+		setup();
+		while (frontIsBlocked()) {
+			turnAround();
+			moveToFirstBeeper();
+			moveBeeper();
+		}
+	}
+	
+	private void setup() {
+		putBeeper();
+		moveToWall();
+		putBeeper();
+	}
+	
+	private void moveToWall() {
+		while (frontIsClear()) {
+			move();
+		}
+	}
+	
+	private void moveBeeper() {
+		if (beepersPresent()) {
+			pickBeeper();
+			move();
+			if (noBeepersPresent()) {
+				putBeeper();
+				moveToWall();
+			}
+		}
+	}
+	
+	private void moveToFirstBeeper() {
+		while (noBeepersPresent()) {
+			move();
+		}
+	}
 }

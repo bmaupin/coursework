@@ -28,6 +28,8 @@ https://see.stanford.edu/Course/CS106A
   5. Copy the Stanford plugin to the *dropins* folder inside your Eclipse installation
   
   6. Close and reopen Eclipse for the plugin to install
+  
+  7. *Project* → make sure *Build Automatically* is checked
 
 <br>
 **To get Karel working in Eclipse:**

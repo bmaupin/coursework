@@ -21,7 +21,7 @@ public class MidpointFindingKarel2 extends SuperKarel {
 		while (frontIsBlocked()) {
 			turnAround();
 			moveToFirstBeeper();
-			grabAndGo();
+			removeBeeper();
 		}
 	}
 	
@@ -39,7 +39,7 @@ public class MidpointFindingKarel2 extends SuperKarel {
 		}
 	}
 	
-	private void grabAndGo() {
+	private void removeBeeper() {
 		if (beepersPresent()) {
 			pickBeeper();
 			move();

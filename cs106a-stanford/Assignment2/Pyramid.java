@@ -45,12 +45,12 @@ public class Pyramid extends Application {
         launch(args);
     }
 	
-	private int calcCanvasHeight() {
-		return (Double.valueOf(BRICKS_IN_BASE * BRICK_HEIGHT * 1.5)).intValue();
+	private double calcCanvasHeight() {
+		return BRICKS_IN_BASE * BRICK_HEIGHT * 1.5;
 	}
 	
-	private int calcCanvasWidth() {
-		return (Double.valueOf(BRICKS_IN_BASE * BRICK_WIDTH * 1.5)).intValue();
+	private double calcCanvasWidth() {
+		return BRICKS_IN_BASE * BRICK_WIDTH * 1.5;
 	}
 	
 	private void drawPyramid(GraphicsContext gc) {
@@ -61,16 +61,16 @@ public class Pyramid extends Application {
 	
 	private void drawRow(GraphicsContext gc, int row) {
 		int bricksInRow = BRICKS_IN_BASE - row;
-		int y = calcCanvasHeight() - BRICK_HEIGHT * (row + 1);
+		double y = calcCanvasHeight() - BRICK_HEIGHT * (row + 1);
 		
 		for (int i = 0; i < bricksInRow; i++) {
-			int x = (calcCanvasWidth() - BRICK_WIDTH * bricksInRow) / 2 + BRICK_WIDTH * i;
+			double x = (calcCanvasWidth() - BRICK_WIDTH * bricksInRow) / 2 + BRICK_WIDTH * i;
 			
 			drawBrick(gc, x, y);
 		}
 	}
 	
-	private void drawBrick(GraphicsContext gc, int x, int y) {
+	private void drawBrick(GraphicsContext gc, double x, double y) {
 		gc.strokeRect(x, y, BRICK_WIDTH, BRICK_HEIGHT);
 	}
 }

@@ -44,7 +44,7 @@ https://see.stanford.edu/Course/CS106A
   1. Right-click the assignment project that requires Karel (e.g. Assignment1) → *Properties* → *Java Build Path* → *Add Library* → *JRE System Library* → *Next*
   
   2. If you haven't yet set up Java 6 in Eclipse:
-    1. *Installed JREs* → *Add* → *Standard VM* → *Next* → *JRE home* → path to JRE (e.g. /usr/lib/jvm/java-6-oracle) → *Finish* → *OK*
+    1. *Installed JREs* → *Add* → *Standard VM* → *Next* → *JRE home* → path to JRE (e.g. /usr/lib/jvm/java-6-oracle-amd64) → *Finish* → *OK*
     
   3. Select *Alternate JRE* → select the Java 6 JRE → *Finish*
 

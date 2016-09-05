@@ -9,8 +9,8 @@
 import acm.program.*;
 
 public class FindRange extends ConsoleProgram {
-	public void run() {
-		/* You fill this in */
-	}
+    public void run() {
+        /* You fill this in */
+    }
 }
 

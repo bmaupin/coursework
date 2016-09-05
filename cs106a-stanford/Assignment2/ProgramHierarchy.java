@@ -10,9 +10,9 @@ import acm.graphics.*;
 import acm.program.*;
 import java.awt.*;
 
-public class ProgramHierarchy extends GraphicsProgram {	
-	public void run() {
-		/* You fill this in. */
-	}
+public class ProgramHierarchy extends GraphicsProgram {    
+    public void run() {
+        /* You fill this in. */
+    }
 }
 

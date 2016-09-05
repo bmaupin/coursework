@@ -9,8 +9,8 @@
 import acm.program.*;
 
 public class Hailstone extends ConsoleProgram {
-	public void run() {
-		/* You fill this in */
-	}
+    public void run() {
+        /* You fill this in */
+    }
 }
 

@@ -28,10 +28,13 @@ public class Pyramid extends Application {
 /** Number of bricks in the base of the pyramid */
     private static final int BRICKS_IN_BASE = 14;
     
+    private static final double CANVAS_WIDTH = BRICKS_IN_BASE * BRICK_WIDTH * 1.5;
+    private static final double CANVAS_HEIGHT = BRICKS_IN_BASE * BRICK_HEIGHT * 1.5;
+    
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
-        Canvas canvas = new Canvas(calcCanvasWidth(), calcCanvasHeight());
+        Canvas canvas = new Canvas(CANVAS_WIDTH, CANVAS_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         
         drawPyramid(gc);
@@ -45,14 +48,6 @@ public class Pyramid extends Application {
         launch(args);
     }
     
-    private double calcCanvasHeight() {
-        return BRICKS_IN_BASE * BRICK_HEIGHT * 1.5;
-    }
-    
-    private double calcCanvasWidth() {
-        return BRICKS_IN_BASE * BRICK_WIDTH * 1.5;
-    }
-    
     private void drawPyramid(GraphicsContext gc) {
         for (int i = 0; i < BRICKS_IN_BASE; i++) {
             drawRow(gc, i);
@@ -61,10 +56,10 @@ public class Pyramid extends Application {
     
     private void drawRow(GraphicsContext gc, int row) {
         int bricksInRow = BRICKS_IN_BASE - row;
-        double y = calcCanvasHeight() - BRICK_HEIGHT * (row + 1);
+        double y = CANVAS_HEIGHT - BRICK_HEIGHT * (row + 1);
         
         for (int i = 0; i < bricksInRow; i++) {
-            double x = (calcCanvasWidth() - BRICK_WIDTH * bricksInRow) / 2 + BRICK_WIDTH * i;
+            double x = (CANVAS_WIDTH - BRICK_WIDTH * bricksInRow) / 2 + BRICK_WIDTH * i;
             
             drawBrick(gc, x, y);
         }

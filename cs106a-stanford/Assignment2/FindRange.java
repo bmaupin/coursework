@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class FindRange {
-    public static final int SENTINEL = 0;
+    private static final int SENTINEL = 0;
 
     private static Scanner scanner;
 

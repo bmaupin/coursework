@@ -1,4 +1,3 @@
-import java.util.Scanner;
 
 /*
  * File: PythagoreanTheorem.java
@@ -7,6 +6,8 @@ import java.util.Scanner;
  * -----------------------------
  * This file is the starter file for the PythagoreanTheorem problem.
  */
+
+import java.util.Scanner;
 
 public class PythagoreanTheorem {
     private static Scanner scanner;

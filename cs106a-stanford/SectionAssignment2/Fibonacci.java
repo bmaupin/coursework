@@ -4,19 +4,14 @@ public class Fibonacci {
     public static void main(String[] args) {
         System.out.println("This program lists the Fibonacci sequence.");
 
-        int prevTerm = 0;
-        int term = 0;
+        int term1 = 0;
+        int term2 = 1;
 
-        while (term < MAX_TERM_VALUE) {
-            System.out.println(term);
+        while (term1 < MAX_TERM_VALUE) {
+            System.out.println(term1);
 
-            if (term == 0) {
-                term++;
-
-            } else {
-                term = prevTerm + term;
-                prevTerm = term - prevTerm;
-            }
+            term2 = term1 + term2;
+            term1 = term2 - term1;
         }
     }
 }

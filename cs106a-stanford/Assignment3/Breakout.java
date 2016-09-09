@@ -13,6 +13,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Breakout extends Application {
@@ -55,11 +56,15 @@ public class Breakout extends Application {
     /** Number of turns */
     private static final int NTURNS = 3;
 
+    private Color[] BrickColors = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN };
+
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
         Canvas canvas = new Canvas(APPLICATION_WIDTH, APPLICATION_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        setUpGame(gc);
 
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
@@ -68,5 +73,32 @@ public class Breakout extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private void setUpGame(GraphicsContext gc) {
+        drawWall(gc);
+        drawBricks(gc);
+    }
+
+    private void drawWall(GraphicsContext gc) {
+        gc.setStroke(Color.BLACK);
+        gc.strokeRect(0, 0, WIDTH, HEIGHT);
+    }
+
+    private void drawBricks(GraphicsContext gc) {
+        for (int row = 0; row < NBRICKS_PER_ROW; row++) {
+            gc.setFill(BrickColors[row / 2]);
+
+            for (int col = 0; col < NBRICK_ROWS; col++) {
+                int x = (APPLICATION_WIDTH - NBRICKS_PER_ROW * BRICK_WIDTH - (NBRICKS_PER_ROW - 1) * BRICK_SEP) / 2
+                        + (BRICK_WIDTH + BRICK_SEP) * col;
+                int y = BRICK_Y_OFFSET + (BRICK_HEIGHT + BRICK_SEP) * row;
+                drawBrick(gc, x, y);
+            }
+        }
+    }
+
+    private void drawBrick(GraphicsContext gc, int x, int y) {
+        gc.fillRect(x, y, BRICK_WIDTH, BRICK_HEIGHT);
     }
 }

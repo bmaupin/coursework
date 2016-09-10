@@ -36,6 +36,9 @@ public class Breakout extends Application {
     /** Offset of the paddle up from the bottom */
     private static final int PADDLE_Y_OFFSET = 30;
 
+    // Maximum value of x the paddle should have so it doesn't go off the screen
+    private static final int PADDLE_MAX_X = APPLICATION_WIDTH - PADDLE_WIDTH;
+    
     /** Number of bricks per row */
     private static final int NBRICKS_PER_ROW = 10;
 
@@ -70,13 +73,21 @@ public class Breakout extends Application {
 
         setUpGame(gc);
         
+        // TODO: move this into setUpGame
         final Rectangle paddle = createPaddle();
         root.getChildren().add(paddle);
         
         root.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                paddle.setX(event.getSceneX());
+            	double paddleX = event.getSceneX();
+            	
+            	// Don't let the paddle go off the right edge of the screen
+            	if (paddleX > PADDLE_MAX_X) {
+            		paddleX = PADDLE_MAX_X;
+            	}
+            	
+                paddle.setX(paddleX);
             }
         });
         

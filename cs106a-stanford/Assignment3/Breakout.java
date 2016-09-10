@@ -9,11 +9,14 @@
  */
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 public class Breakout extends Application {
@@ -65,7 +68,17 @@ public class Breakout extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         setUpGame(gc);
-
+        
+        final Rectangle paddle = createPaddle();
+        root.getChildren().add(paddle);
+        
+        root.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                paddle.setX(event.getSceneX());
+            }
+        });
+        
         root.getChildren().add(canvas);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
@@ -100,5 +113,14 @@ public class Breakout extends Application {
 
     private void drawBrick(GraphicsContext gc, int x, int y) {
         gc.fillRect(x, y, BRICK_WIDTH, BRICK_HEIGHT);
+    }
+
+    private Rectangle createPaddle() {
+    	int x = (APPLICATION_WIDTH - PADDLE_WIDTH) / 2;
+    	int y = APPLICATION_HEIGHT - PADDLE_Y_OFFSET;
+    	
+    	final Rectangle rect = new Rectangle(x, y, PADDLE_WIDTH, PADDLE_HEIGHT);
+    	rect.setFill(Color.BLACK);
+    	return rect;
     }
 }

@@ -10,6 +10,7 @@
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -80,7 +81,11 @@ public class Breakout extends Application {
         });
         
         root.getChildren().add(canvas);
-        primaryStage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        // Hide the mouse cursor
+        scene.setCursor(Cursor.NONE);
+        
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 

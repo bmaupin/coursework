@@ -17,6 +17,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
@@ -65,6 +66,10 @@ public class Breakout extends Application {
 
     private Color[] BrickColors = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN };
 
+    public static void main(String[] args) {
+        launch(args);
+    }
+    
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
@@ -76,6 +81,9 @@ public class Breakout extends Application {
         // TODO: move this into setUpGame
         final Rectangle paddle = createPaddle();
         root.getChildren().add(paddle);
+        
+        final Circle ball = createBall();
+        root.getChildren().add(ball);
         
         root.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
@@ -98,10 +106,6 @@ public class Breakout extends Application {
         
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
     private void setUpGame(GraphicsContext gc) {
@@ -135,8 +139,16 @@ public class Breakout extends Application {
     	int x = (APPLICATION_WIDTH - PADDLE_WIDTH) / 2;
     	int y = APPLICATION_HEIGHT - PADDLE_Y_OFFSET;
     	
-    	final Rectangle rect = new Rectangle(x, y, PADDLE_WIDTH, PADDLE_HEIGHT);
-    	rect.setFill(Color.BLACK);
-    	return rect;
+    	final Rectangle paddle = new Rectangle(x, y, PADDLE_WIDTH, PADDLE_HEIGHT);
+    	paddle.setFill(Color.BLACK);
+    	return paddle;
+    }
+    
+    private Circle createBall() {
+    	int x = APPLICATION_WIDTH / 2;
+    	int y = APPLICATION_HEIGHT / 2;
+    	
+    	final Circle ball = new Circle(x, y, BALL_RADIUS, Color.BLACK); 
+    	return ball;
     }
 }

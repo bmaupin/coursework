@@ -121,6 +121,8 @@ public class Breakout extends Application {
         final AnimationTimer ballAnimation = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                checkWallCollision(ball);
+
                 ball.setCenterX(ball.getCenterX() + ballVelocityX);
                 ball.setCenterY(ball.getCenterY() + ballVelocityY);
             }
@@ -175,6 +177,20 @@ public class Breakout extends Application {
 
         final Circle ball = new Circle(x, y, BALL_RADIUS, Color.BLACK);
         return ball;
+    }
+
+    void checkWallCollision(final Circle ball) {
+        // Check to see whether ball hit the top or bottom wall
+        if (ball.getCenterY() - BALL_RADIUS <= 0 || ball.getCenterY() + BALL_RADIUS >= APPLICATION_HEIGHT) {
+            // Change direction
+            ballVelocityY = -ballVelocityY;
+        }
+
+        // Check to see whether the ball's hit the right or left wall
+        if (ball.getCenterX() - BALL_RADIUS <= 0 || ball.getCenterX() + BALL_RADIUS >= APPLICATION_WIDTH) {
+            // Change direction
+            ballVelocityX = -ballVelocityX;
+        }
     }
 
     // TODO: pass bricks and the paddle, check all for collisions

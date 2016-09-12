@@ -74,6 +74,7 @@ public class Breakout extends Application {
     private Color[] brickColors = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN };
     private double ballVelocityX;
     private double ballVelocityY = 3.0;
+    Rectangle paddle;
 
     public static void main(String[] args) {
         launch(args);
@@ -88,7 +89,7 @@ public class Breakout extends Application {
         setUpGame(gc);
 
         // TODO: move this into setUpGame
-        final Rectangle paddle = createPaddle();
+        paddle = createPaddle();
         root.getChildren().add(paddle);
 
         final Circle ball = createBall();
@@ -199,8 +200,12 @@ public class Breakout extends Application {
             @Override
             public void changed(ObservableValue<? extends Bounds> arg0, Bounds oldValue, Bounds newValue) {
                 if (shape2.getBoundsInParent().intersects(newValue)) {
-                    ball.setFill(Color.RED);
-                    shape2.setFill(Color.RED);
+                    // Bounce the ball off the paddle
+                    if (shape2 == paddle) {
+                        if (ballVelocityY > 0) {
+                            ballVelocityY = -ballVelocityY;
+                        }
+                    }
                 }
             }
         });

@@ -8,8 +8,14 @@
  * This file will eventually implement the game of Breakout.
  */
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -19,7 +25,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class Breakout extends Application {
     /** Width and height of application window in pixels */
@@ -39,7 +47,7 @@ public class Breakout extends Application {
 
     // Maximum value of x the paddle should have so it doesn't go off the screen
     private static final int PADDLE_MAX_X = APPLICATION_WIDTH - PADDLE_WIDTH;
-    
+
     /** Number of bricks per row */
     private static final int NBRICKS_PER_ROW = 10;
 
@@ -69,7 +77,7 @@ public class Breakout extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
+
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
@@ -77,34 +85,46 @@ public class Breakout extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         setUpGame(gc);
-        
+
         // TODO: move this into setUpGame
         final Rectangle paddle = createPaddle();
         root.getChildren().add(paddle);
-        
+
         final Circle ball = createBall();
         root.getChildren().add(ball);
-        
+
         root.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-            	double paddleX = event.getSceneX();
-            	
-            	// Don't let the paddle go off the right edge of the screen
-            	if (paddleX > PADDLE_MAX_X) {
-            		paddleX = PADDLE_MAX_X;
-            	}
-            	
+                double paddleX = event.getSceneX();
+
+                // Don't let the paddle go off the right edge of the screen
+                if (paddleX > PADDLE_MAX_X) {
+                    paddleX = PADDLE_MAX_X;
+                }
+
                 paddle.setX(paddleX);
             }
         });
-        
+
         root.getChildren().add(canvas);
         Scene scene = new Scene(root);
         // Hide the mouse cursor
         scene.setCursor(Cursor.NONE);
-        
+
         primaryStage.setScene(scene);
+
+        final Timeline timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        // final KeyValue kv = new KeyValue(ball.centerXProperty(),
+        // ball.getCenterX() + 300);
+        final KeyValue kv = new KeyValue(ball.centerYProperty(), ball.getCenterY() + 300);
+        final KeyFrame kf = new KeyFrame(Duration.millis(1000), kv);
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+
+        checkCollision(ball, paddle);
+
         primaryStage.show();
     }
 
@@ -136,19 +156,51 @@ public class Breakout extends Application {
     }
 
     private Rectangle createPaddle() {
-    	int x = (APPLICATION_WIDTH - PADDLE_WIDTH) / 2;
-    	int y = APPLICATION_HEIGHT - PADDLE_Y_OFFSET;
-    	
-    	final Rectangle paddle = new Rectangle(x, y, PADDLE_WIDTH, PADDLE_HEIGHT);
-    	paddle.setFill(Color.BLACK);
-    	return paddle;
+        int x = (APPLICATION_WIDTH - PADDLE_WIDTH) / 2;
+        int y = APPLICATION_HEIGHT - PADDLE_HEIGHT - PADDLE_Y_OFFSET;
+
+        final Rectangle paddle = new Rectangle(x, y, PADDLE_WIDTH, PADDLE_HEIGHT);
+        paddle.setFill(Color.BLACK);
+        return paddle;
     }
-    
+
     private Circle createBall() {
-    	int x = APPLICATION_WIDTH / 2;
-    	int y = APPLICATION_HEIGHT / 2;
-    	
-    	final Circle ball = new Circle(x, y, BALL_RADIUS, Color.BLACK); 
-    	return ball;
+        // x and y are the center coordinates of the circle
+        int x = APPLICATION_WIDTH / 2;
+        int y = APPLICATION_HEIGHT / 2;
+
+        final Circle ball = new Circle(x, y, BALL_RADIUS, Color.BLACK);
+        return ball;
     }
+
+    void checkCollision(final Shape ball, final Shape shape2) {
+        ball.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
+            @Override
+            public void changed(ObservableValue<? extends Bounds> arg0, Bounds oldValue, Bounds newValue) {
+                if (shape2.getBoundsInParent().intersects(newValue)) {
+                    ball.setFill(Color.RED);
+                    shape2.setFill(Color.RED);
+                }
+            }
+        });
+    }
+
+    /*
+     * private void checkCollision(Shape shape1, Shape shape2) { Shape intersect
+     * = Shape.intersect(shape1, shape2); if
+     * (intersect.getBoundsInLocal().getWidth() != -1) {
+     * shape1.setFill(Color.RED); shape2.setFill(Color.RED); } }
+     */
+    /*
+     * private void checkShapeIntersection(Shape shape) { boolean
+     * collisionDetected = false; for (Shape static_bloc : nodes) { if
+     * (static_bloc != shape) { static_bloc.setFill(Color.GREEN);
+     *
+     * Shape intersect = Shape.intersect(shape, static_bloc); if
+     * (intersect.getBoundsInLocal().getWidth() != -1) { collisionDetected =
+     * true; } } }
+     *
+     * if (collisionDetected) { shape.setFill(Color.BLUE); } else {
+     * shape.setFill(Color.GREEN); } }
+     */
 }

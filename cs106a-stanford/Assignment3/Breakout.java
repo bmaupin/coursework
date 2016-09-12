@@ -8,9 +8,9 @@
  * This file will eventually implement the game of Breakout.
  */
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import java.util.Random;
+
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -27,7 +27,6 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class Breakout extends Application {
     /** Width and height of application window in pixels */
@@ -72,7 +71,9 @@ public class Breakout extends Application {
     /** Number of turns */
     private static final int NTURNS = 3;
 
-    private Color[] BrickColors = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN };
+    private Color[] brickColors = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN };
+    private double ballVelocityX;
+    private double ballVelocityY = 3.0;
 
     public static void main(String[] args) {
         launch(args);
@@ -114,14 +115,17 @@ public class Breakout extends Application {
 
         primaryStage.setScene(scene);
 
-        final Timeline timeline = new Timeline();
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        // final KeyValue kv = new KeyValue(ball.centerXProperty(),
-        // ball.getCenterX() + 300);
-        final KeyValue kv = new KeyValue(ball.centerYProperty(), ball.getCenterY() + 300);
-        final KeyFrame kf = new KeyFrame(Duration.millis(1000), kv);
-        timeline.getKeyFrames().add(kf);
-        timeline.play();
+        // Generate a random velocity between 1.0 and 3.0
+        ballVelocityX = new Random().nextDouble() * 2 + 1;
+
+        final AnimationTimer ballAnimation = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                ball.setCenterX(ball.getCenterX() + ballVelocityX);
+                ball.setCenterY(ball.getCenterY() + ballVelocityY);
+            }
+        };
+        ballAnimation.start();
 
         checkCollision(ball, paddle);
 
@@ -140,7 +144,7 @@ public class Breakout extends Application {
 
     private void drawBricks(GraphicsContext gc) {
         for (int row = 0; row < NBRICKS_PER_ROW; row++) {
-            gc.setFill(BrickColors[row / 2]);
+            gc.setFill(brickColors[row / 2]);
 
             for (int col = 0; col < NBRICK_ROWS; col++) {
                 int x = (APPLICATION_WIDTH - NBRICKS_PER_ROW * BRICK_WIDTH - (NBRICKS_PER_ROW - 1) * BRICK_SEP) / 2
@@ -173,6 +177,7 @@ public class Breakout extends Application {
         return ball;
     }
 
+    // TODO: pass bricks and the paddle, check all for collisions
     void checkCollision(final Shape ball, final Shape shape2) {
         ball.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
             @Override
@@ -184,23 +189,4 @@ public class Breakout extends Application {
             }
         });
     }
-
-    /*
-     * private void checkCollision(Shape shape1, Shape shape2) { Shape intersect
-     * = Shape.intersect(shape1, shape2); if
-     * (intersect.getBoundsInLocal().getWidth() != -1) {
-     * shape1.setFill(Color.RED); shape2.setFill(Color.RED); } }
-     */
-    /*
-     * private void checkShapeIntersection(Shape shape) { boolean
-     * collisionDetected = false; for (Shape static_bloc : nodes) { if
-     * (static_bloc != shape) { static_bloc.setFill(Color.GREEN);
-     *
-     * Shape intersect = Shape.intersect(shape, static_bloc); if
-     * (intersect.getBoundsInLocal().getWidth() != -1) { collisionDetected =
-     * true; } } }
-     *
-     * if (collisionDetected) { shape.setFill(Color.BLUE); } else {
-     * shape.setFill(Color.GREEN); } }
-     */
 }

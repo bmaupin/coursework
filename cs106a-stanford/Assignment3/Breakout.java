@@ -8,6 +8,8 @@
  * This file will eventually implement the game of Breakout.
  */
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javafx.animation.AnimationTimer;
@@ -71,10 +73,11 @@ public class Breakout extends Application {
     /** Number of turns */
     private static final int NTURNS = 3;
 
+    private List<Rectangle> bricks;
     private Color[] brickColors = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN };
     private double ballVelocityX;
     private double ballVelocityY = 3.0;
-    Rectangle paddle;
+    private Rectangle paddle;
 
     public static void main(String[] args) {
         launch(args);
@@ -89,6 +92,9 @@ public class Breakout extends Application {
         setUpGame(gc);
 
         // TODO: move this into setUpGame
+        bricks = createBricks();
+        root.getChildren().addAll(bricks);
+
         paddle = createPaddle();
         root.getChildren().add(paddle);
 
@@ -137,7 +143,6 @@ public class Breakout extends Application {
 
     private void setUpGame(GraphicsContext gc) {
         drawWall(gc);
-        drawBricks(gc);
     }
 
     private void drawWall(GraphicsContext gc) {
@@ -145,21 +150,26 @@ public class Breakout extends Application {
         gc.strokeRect(0, 0, WIDTH, HEIGHT);
     }
 
-    private void drawBricks(GraphicsContext gc) {
-        for (int row = 0; row < NBRICKS_PER_ROW; row++) {
-            gc.setFill(brickColors[row / 2]);
+    private List<Rectangle> createBricks() {
+        List<Rectangle> bricks = new ArrayList<Rectangle>();
 
+        for (int row = 0; row < NBRICKS_PER_ROW; row++) {
             for (int col = 0; col < NBRICK_ROWS; col++) {
                 int x = (APPLICATION_WIDTH - NBRICKS_PER_ROW * BRICK_WIDTH - (NBRICKS_PER_ROW - 1) * BRICK_SEP) / 2
                         + (BRICK_WIDTH + BRICK_SEP) * col;
                 int y = BRICK_Y_OFFSET + (BRICK_HEIGHT + BRICK_SEP) * row;
-                drawBrick(gc, x, y);
+
+                bricks.add(createBrick(x, y, brickColors[row / 2]));
             }
         }
+
+        return bricks;
     }
 
-    private void drawBrick(GraphicsContext gc, int x, int y) {
-        gc.fillRect(x, y, BRICK_WIDTH, BRICK_HEIGHT);
+    private Rectangle createBrick(int x, int y, Color color) {
+        final Rectangle brick = new Rectangle(x, y, BRICK_WIDTH, BRICK_HEIGHT);
+        brick.setFill(color);
+        return brick;
     }
 
     private Rectangle createPaddle() {
@@ -202,6 +212,8 @@ public class Breakout extends Application {
                 if (shape2.getBoundsInParent().intersects(newValue)) {
                     // Bounce the ball off the paddle
                     if (shape2 == paddle) {
+                        // This has to be done because it happens so fast the
+                        // velocity may get changed multiple times
                         if (ballVelocityY > 0) {
                             ballVelocityY = -ballVelocityY;
                         }

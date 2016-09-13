@@ -21,8 +21,6 @@ import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -75,8 +73,11 @@ public class Breakout extends Application {
 
     private List<Rectangle> bricks;
     private Color[] brickColors = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN };
+
+    private Circle ball;
     private double ballVelocityX;
     private double ballVelocityY = 3.0;
+
     private Rectangle paddle;
 
     public static void main(String[] args) {
@@ -85,42 +86,7 @@ public class Breakout extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Group root = new Group();
-        Canvas canvas = new Canvas(APPLICATION_WIDTH, APPLICATION_HEIGHT);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        setUpGame(gc);
-
-        // TODO: move this into setUpGame
-        bricks = createBricks();
-        root.getChildren().addAll(bricks);
-
-        paddle = createPaddle();
-        root.getChildren().add(paddle);
-
-        final Circle ball = createBall();
-        root.getChildren().add(ball);
-
-        root.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                double paddleX = event.getSceneX();
-
-                // Don't let the paddle go off the right edge of the screen
-                if (paddleX > PADDLE_MAX_X) {
-                    paddleX = PADDLE_MAX_X;
-                }
-
-                paddle.setX(paddleX);
-            }
-        });
-
-        root.getChildren().add(canvas);
-        Scene scene = new Scene(root);
-        // Hide the mouse cursor
-        scene.setCursor(Cursor.NONE);
-
-        primaryStage.setScene(scene);
+        setUpGame(primaryStage);
 
         // Generate a random velocity between 1.0 and 3.0
         ballVelocityX = new Random().nextDouble() * 2 + 1;
@@ -141,13 +107,49 @@ public class Breakout extends Application {
         primaryStage.show();
     }
 
-    private void setUpGame(GraphicsContext gc) {
-        drawWall(gc);
+    private void setUpGame(Stage primaryStage) {
+        Group root = new Group();
+
+        Rectangle wall = createWall();
+        root.getChildren().add(wall);
+
+        bricks = createBricks();
+        root.getChildren().addAll(bricks);
+
+        paddle = createPaddle();
+        root.getChildren().add(paddle);
+
+        ball = createBall();
+        root.getChildren().add(ball);
+
+        // Track mouse movement
+        root.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                double paddleX = event.getSceneX();
+
+                // Don't let the paddle go off the right edge of the screen
+                if (paddleX > PADDLE_MAX_X) {
+                    paddleX = PADDLE_MAX_X;
+                }
+
+                paddle.setX(paddleX);
+            }
+        });
+
+        Scene scene = new Scene(root);
+
+        // Hide the mouse cursor
+        scene.setCursor(Cursor.NONE);
+
+        primaryStage.setScene(scene);
     }
 
-    private void drawWall(GraphicsContext gc) {
-        gc.setStroke(Color.BLACK);
-        gc.strokeRect(0, 0, WIDTH, HEIGHT);
+    private Rectangle createWall() {
+        final Rectangle wall = new Rectangle(0, 0, WIDTH, HEIGHT);
+        wall.setFill(Color.TRANSPARENT);
+        wall.setStroke(Color.BLACK);
+        return wall;
     }
 
     private List<Rectangle> createBricks() {

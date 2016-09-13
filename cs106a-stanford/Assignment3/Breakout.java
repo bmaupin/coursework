@@ -87,24 +87,7 @@ public class Breakout extends Application {
     @Override
     public void start(Stage primaryStage) {
         setUpGame(primaryStage);
-
-        // Generate a random velocity between 1.0 and 3.0
-        ballVelocityX = new Random().nextDouble() * 2 + 1;
-
-        final AnimationTimer ballAnimation = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                checkWallCollision(ball);
-
-                ball.setCenterX(ball.getCenterX() + ballVelocityX);
-                ball.setCenterY(ball.getCenterY() + ballVelocityY);
-            }
-        };
-        ballAnimation.start();
-
-        checkCollision(ball, paddle);
-
-        primaryStage.show();
+        playGame();
     }
 
     private void setUpGame(Stage primaryStage) {
@@ -143,10 +126,12 @@ public class Breakout extends Application {
         scene.setCursor(Cursor.NONE);
 
         primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     private Rectangle createWall() {
         final Rectangle wall = new Rectangle(0, 0, WIDTH, HEIGHT);
+        // Default fill for a rectangle is black, so we need to remove it
         wall.setFill(Color.TRANSPARENT);
         wall.setStroke(Color.BLACK);
         return wall;
@@ -192,7 +177,25 @@ public class Breakout extends Application {
         return ball;
     }
 
-    void checkWallCollision(final Circle ball) {
+    private void playGame() {
+        // Generate a random velocity between 1.0 and 3.0
+        ballVelocityX = new Random().nextDouble() * 2 + 1;
+
+        final AnimationTimer ballAnimation = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                checkWallCollision(ball);
+
+                ball.setCenterX(ball.getCenterX() + ballVelocityX);
+                ball.setCenterY(ball.getCenterY() + ballVelocityY);
+            }
+        };
+        ballAnimation.start();
+
+        checkCollision(ball, paddle);
+    }
+
+    private void checkWallCollision(final Circle ball) {
         // Check to see whether ball hit the top or bottom wall
         if (ball.getCenterY() - BALL_RADIUS <= 0 || ball.getCenterY() + BALL_RADIUS >= APPLICATION_HEIGHT) {
             // Change direction
@@ -207,7 +210,7 @@ public class Breakout extends Application {
     }
 
     // TODO: pass bricks and the paddle, check all for collisions
-    void checkCollision(final Shape ball, final Shape shape2) {
+    private void checkCollision(final Shape ball, final Shape shape2) {
         ball.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
             @Override
             public void changed(ObservableValue<? extends Bounds> arg0, Bounds oldValue, Bounds newValue) {

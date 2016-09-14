@@ -14,10 +14,7 @@ import java.util.Random;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -25,7 +22,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
 public class Breakout extends Application {
@@ -80,6 +76,8 @@ public class Breakout extends Application {
 
     private Rectangle paddle;
 
+    private Group root;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -91,7 +89,7 @@ public class Breakout extends Application {
     }
 
     private void setUpGame(Stage primaryStage) {
-        Group root = new Group();
+        root = new Group();
 
         Rectangle wall = createWall();
         root.getChildren().add(wall);
@@ -184,19 +182,19 @@ public class Breakout extends Application {
         final AnimationTimer ballAnimation = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                checkWallCollision(ball);
+                checkWallCollision();
+                checkPaddleCollision();
+                checkBrickCollision();
 
                 ball.setCenterX(ball.getCenterX() + ballVelocityX);
                 ball.setCenterY(ball.getCenterY() + ballVelocityY);
             }
         };
         ballAnimation.start();
-
-        checkCollision(ball, paddle);
     }
 
-    private void checkWallCollision(final Circle ball) {
-        // Check to see whether ball hit the top or bottom wall
+    private void checkWallCollision() {
+        // Check to see whether the ball's hit the top or bottom wall
         if (ball.getCenterY() - BALL_RADIUS <= 0 || ball.getCenterY() + BALL_RADIUS >= APPLICATION_HEIGHT) {
             // Change direction
             ballVelocityY = -ballVelocityY;
@@ -204,27 +202,30 @@ public class Breakout extends Application {
 
         // Check to see whether the ball's hit the right or left wall
         if (ball.getCenterX() - BALL_RADIUS <= 0 || ball.getCenterX() + BALL_RADIUS >= APPLICATION_WIDTH) {
-            // Change direction
             ballVelocityX = -ballVelocityX;
         }
     }
 
-    // TODO: pass bricks and the paddle, check all for collisions
-    private void checkCollision(final Shape ball, final Shape shape2) {
-        ball.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
-            @Override
-            public void changed(ObservableValue<? extends Bounds> arg0, Bounds oldValue, Bounds newValue) {
-                if (shape2.getBoundsInParent().intersects(newValue)) {
-                    // Bounce the ball off the paddle
-                    if (shape2 == paddle) {
-                        // This has to be done because it happens so fast the
-                        // velocity may get changed multiple times
-                        if (ballVelocityY > 0) {
-                            ballVelocityY = -ballVelocityY;
-                        }
-                    }
-                }
+    private void checkPaddleCollision() {
+        // Only check paddle collisions if the ball is moving downward. This
+        // keeps the ball from getting stuck on the paddle
+        if (ballVelocityY > 0) {
+            if (ball.getBoundsInLocal().intersects(paddle.getBoundsInLocal())) {
+                ballVelocityY = -ballVelocityY;
             }
-        });
+        }
+    }
+
+    private void checkBrickCollision() {
+        for (Rectangle brick : bricks) {
+            if (ball.getBoundsInLocal().intersects(brick.getBoundsInLocal())) {
+                root.getChildren().remove(brick);
+                bricks.remove(brick);
+                ballVelocityY = -ballVelocityY;
+                // Only check collision with one brick to keep things simple
+                // (this seems to fulfill the assignment requirements)
+                break;
+            }
+        }
     }
 }

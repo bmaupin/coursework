@@ -22,6 +22,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class Breakout extends Application {
@@ -78,6 +79,8 @@ public class Breakout extends Application {
     private Rectangle paddle;
 
     private Group root;
+
+    private int turnsLeft = NTURNS;
 
     public static void main(String[] args) {
         launch(args);
@@ -208,8 +211,7 @@ public class Breakout extends Application {
 
         // Check to see whether the ball's hit the bottom wall
         if (ball.getCenterY() + BALL_RADIUS >= APPLICATION_HEIGHT) {
-            ballAnimation.stop();
-            restartGameOnClick();
+            endTurn();
         }
     }
 
@@ -235,6 +237,31 @@ public class Breakout extends Application {
                 break;
             }
         }
+    }
+
+    private void endTurn() {
+        turnsLeft--;
+        ballAnimation.stop();
+
+        if (turnsLeft > 0) {
+            restartGameOnClick();
+        } else {
+            displayGameOverText();
+        }
+    }
+
+    private void displayGameOverText() {
+        // Center text horizontally on x
+        // gc.setTextAlign(TextAlignment.CENTER);
+        // // Centers text vertically on y
+        // gc.setTextBaseline(VPos.CENTER);
+
+        // x and y are the center coordinates of the circle
+        int x = APPLICATION_WIDTH / 2;
+        int y = APPLICATION_HEIGHT / 2;
+
+        final Text gameOverText = new Text(x, y, "Game over");
+        root.getChildren().add(gameOverText);
     }
 
     private void restartGameOnClick() {

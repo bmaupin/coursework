@@ -71,6 +71,7 @@ public class Breakout extends Application {
     private Color[] brickColors = { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN };
 
     private Circle ball;
+    private AnimationTimer ballAnimation;
     private double ballVelocityX;
     private double ballVelocityY = 3.0;
 
@@ -179,7 +180,7 @@ public class Breakout extends Application {
         // Generate a random velocity between 1.0 and 3.0
         ballVelocityX = new Random().nextDouble() * 2 + 1;
 
-        final AnimationTimer ballAnimation = new AnimationTimer() {
+        ballAnimation = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 checkWallCollision();
@@ -194,15 +195,21 @@ public class Breakout extends Application {
     }
 
     private void checkWallCollision() {
-        // Check to see whether the ball's hit the top or bottom wall
-        if (ball.getCenterY() - BALL_RADIUS <= 0 || ball.getCenterY() + BALL_RADIUS >= APPLICATION_HEIGHT) {
+        // Check to see whether the ball's hit the right or left wall
+        if (ball.getCenterX() - BALL_RADIUS <= 0 || ball.getCenterX() + BALL_RADIUS >= APPLICATION_WIDTH) {
+            ballVelocityX = -ballVelocityX;
+        }
+
+        // Check to see whether the ball's hit the top wall
+        if (ball.getCenterY() - BALL_RADIUS <= 0) {
             // Change direction
             ballVelocityY = -ballVelocityY;
         }
 
-        // Check to see whether the ball's hit the right or left wall
-        if (ball.getCenterX() - BALL_RADIUS <= 0 || ball.getCenterX() + BALL_RADIUS >= APPLICATION_WIDTH) {
-            ballVelocityX = -ballVelocityX;
+        // Check to see whether the ball's hit the bottom wall
+        if (ball.getCenterY() + BALL_RADIUS >= APPLICATION_HEIGHT) {
+            ballAnimation.stop();
+            restartGameOnClick();
         }
     }
 
@@ -222,10 +229,28 @@ public class Breakout extends Application {
                 root.getChildren().remove(brick);
                 bricks.remove(brick);
                 ballVelocityY = -ballVelocityY;
+
                 // Only check collision with one brick to keep things simple
                 // (this seems to fulfill the assignment requirements)
                 break;
             }
         }
+    }
+
+    private void restartGameOnClick() {
+        root.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                // Recreate the ball at its starting location
+                root.getChildren().remove(ball);
+                ball = createBall();
+                root.getChildren().add(ball);
+
+                ballAnimation.start();
+
+                // Stop listening for mouse clicks
+                root.setOnMouseClicked(null);
+            }
+        });
     }
 }

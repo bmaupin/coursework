@@ -240,6 +240,10 @@ public class Breakout extends Application {
                 break;
             }
         }
+
+        if (bricks.size() == 0) {
+            winGame();
+        }
     }
 
     private void endTurn() {
@@ -249,12 +253,12 @@ public class Breakout extends Application {
         if (turnsLeft > 0) {
             restartGameOnClick();
         } else {
-            displayGameOverText();
+            displayCenteredText("Game over");
         }
     }
 
-    private void displayGameOverText() {
-        final Text gameOverText = new Text("Game over");
+    private void displayCenteredText(String text) {
+        final Text gameOverText = new Text(text);
 
         // Put the text in a StackPane so it will be centered in the game window
         StackPane stackPane = new StackPane();
@@ -279,5 +283,10 @@ public class Breakout extends Application {
                 root.setOnMouseClicked(null);
             }
         });
+    }
+
+    private void winGame() {
+        ballAnimation.stop();
+        displayCenteredText("You win!");
     }
 }

@@ -75,13 +75,13 @@ public class Breakout extends Application {
     private Circle ball;
     private AnimationTimer ballAnimation;
     private double ballVelocityX;
-    private double ballVelocityY = 3.0;
+    private double ballVelocityY;
 
     private Rectangle paddle;
 
-    private Group root;
+    private Group rootGroup;
 
-    private int turnsLeft = NTURNS;
+    private int turnsLeft;
 
     public static void main(String[] args) {
         launch(args);
@@ -93,44 +93,32 @@ public class Breakout extends Application {
         playGame();
     }
 
-    // TODO: break this function up
     private void setUpGame(Stage primaryStage) {
-        root = new Group();
+        rootGroup = new Group();
+        Scene scene = new Scene(rootGroup);
 
-        Rectangle wall = createWall();
-        root.getChildren().add(wall);
-
-        bricks = createBricks();
-        root.getChildren().addAll(bricks);
-
-        paddle = createPaddle();
-        root.getChildren().add(paddle);
-
-        ball = createBall();
-        root.getChildren().add(ball);
-
-        // Track mouse movement
-        root.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                double paddleX = event.getSceneX();
-
-                // Don't let the paddle go off the right edge of the screen
-                if (paddleX > PADDLE_MAX_X) {
-                    paddleX = PADDLE_MAX_X;
-                }
-
-                paddle.setX(paddleX);
-            }
-        });
-
-        Scene scene = new Scene(root);
+        addGamePieces();
+        trackMouseMovement();
 
         // Hide the mouse cursor
         scene.setCursor(Cursor.NONE);
 
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private void addGamePieces() {
+        Rectangle wall = createWall();
+        rootGroup.getChildren().add(wall);
+
+        bricks = createBricks();
+        rootGroup.getChildren().addAll(bricks);
+
+        paddle = createPaddle();
+        rootGroup.getChildren().add(paddle);
+
+        ball = createBall();
+        rootGroup.getChildren().add(ball);
     }
 
     private Rectangle createWall() {
@@ -181,10 +169,28 @@ public class Breakout extends Application {
         return ball;
     }
 
+    private void trackMouseMovement() {
+        rootGroup.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                double paddleX = event.getSceneX();
+
+                // Don't let the paddle go off the right edge of the screen
+                if (paddleX > PADDLE_MAX_X) {
+                    paddleX = PADDLE_MAX_X;
+                }
+
+                paddle.setX(paddleX);
+            }
+        });
+    }
+
     private void playGame() {
         // Generate a random velocity between 1.0 and 3.0
         ballVelocityX = new Random().nextDouble() * 2 + 1;
-        // TODO initialize ballVeloxityX here too
+        ballVelocityY = 3.0;
+
+        turnsLeft = NTURNS;
 
         ballAnimation = new AnimationTimer() {
             @Override
@@ -231,7 +237,7 @@ public class Breakout extends Application {
     private void checkBrickCollision() {
         for (Rectangle brick : bricks) {
             if (ball.getBoundsInLocal().intersects(brick.getBoundsInLocal())) {
-                root.getChildren().remove(brick);
+                rootGroup.getChildren().remove(brick);
                 bricks.remove(brick);
                 ballVelocityY = -ballVelocityY;
 
@@ -257,32 +263,32 @@ public class Breakout extends Application {
         }
     }
 
-    private void displayCenteredText(String text) {
-        final Text gameOverText = new Text(text);
-
-        // Put the text in a StackPane so it will be centered in the game window
-        StackPane stackPane = new StackPane();
-        stackPane.setPrefSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
-        stackPane.getChildren().add(gameOverText);
-
-        root.getChildren().add(stackPane);
-    }
-
     private void restartGameOnClick() {
-        root.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        rootGroup.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 // Recreate the ball at its starting location
-                root.getChildren().remove(ball);
+                rootGroup.getChildren().remove(ball);
                 ball = createBall();
-                root.getChildren().add(ball);
+                rootGroup.getChildren().add(ball);
 
                 ballAnimation.start();
 
                 // Stop listening for mouse clicks
-                root.setOnMouseClicked(null);
+                rootGroup.setOnMouseClicked(null);
             }
         });
+    }
+
+    private void displayCenteredText(String textToDisplay) {
+        final Text textNode = new Text(textToDisplay);
+
+        // Put the text in a StackPane so it will be centered in the game window
+        StackPane stackPane = new StackPane();
+        stackPane.setPrefSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
+        stackPane.getChildren().add(textNode);
+
+        rootGroup.getChildren().add(stackPane);
     }
 
     private void winGame() {

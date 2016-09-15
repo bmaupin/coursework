@@ -19,6 +19,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -92,6 +93,7 @@ public class Breakout extends Application {
         playGame();
     }
 
+    // TODO: break this function up
     private void setUpGame(Stage primaryStage) {
         root = new Group();
 
@@ -182,6 +184,7 @@ public class Breakout extends Application {
     private void playGame() {
         // Generate a random velocity between 1.0 and 3.0
         ballVelocityX = new Random().nextDouble() * 2 + 1;
+        // TODO initialize ballVeloxityX here too
 
         ballAnimation = new AnimationTimer() {
             @Override
@@ -251,17 +254,14 @@ public class Breakout extends Application {
     }
 
     private void displayGameOverText() {
-        // Center text horizontally on x
-        // gc.setTextAlign(TextAlignment.CENTER);
-        // // Centers text vertically on y
-        // gc.setTextBaseline(VPos.CENTER);
+        final Text gameOverText = new Text("Game over");
 
-        // x and y are the center coordinates of the circle
-        int x = APPLICATION_WIDTH / 2;
-        int y = APPLICATION_HEIGHT / 2;
+        // Put the text in a StackPane so it will be centered in the game window
+        StackPane stackPane = new StackPane();
+        stackPane.setPrefSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
+        stackPane.getChildren().add(gameOverText);
 
-        final Text gameOverText = new Text(x, y, "Game over");
-        root.getChildren().add(gameOverText);
+        root.getChildren().add(stackPane);
     }
 
     private void restartGameOnClick() {

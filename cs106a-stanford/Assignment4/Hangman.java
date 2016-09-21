@@ -39,6 +39,14 @@ public class Hangman {
         secretWord = lexicon.getWord(new Random().nextInt(lexicon.getWordCount()));
     }
 
+    private void initializeGuessedWord() {
+        guessedWord = "";
+
+        for (int i = 0; i < secretWord.length(); i++) {
+            guessedWord += "-";
+        }
+    }
+
     private void playGame() {
         System.out.println("Welcome to Hangman!");
 
@@ -55,7 +63,9 @@ public class Hangman {
                 guess = guess.toUpperCase();
 
                 if (isCorrectGuess(guess)) {
+                    System.out.println("That guess is correct.");
                     updateGuessedWord(guess);
+
                 } else {
                     System.out.println(String.format("There are no %s's in the word", guess));
                     guessesRemaining--;
@@ -66,24 +76,14 @@ public class Hangman {
             }
 
             if (guessesRemaining == 0) {
-                System.out.println("You're completely hung.");
-                System.out.println(String.format("The word was: %s", secretWord));
+                printLoseGameMessage();
                 break;
             }
 
             if (isSecretWordGuessed()) {
-                System.out.println(String.format("You guessed the word: %s", secretWord));
-                System.out.println("You win");
+                printWinGameMessage();
                 break;
             }
-        }
-    }
-
-    private void initializeGuessedWord() {
-        guessedWord = "";
-
-        for (int i = 0; i < secretWord.length(); i++) {
-            guessedWord += "-";
         }
     }
 
@@ -117,5 +117,16 @@ public class Hangman {
 
     private boolean isSecretWordGuessed() {
         return !guessedWord.contains("-");
+    }
+
+    private void printLoseGameMessage() {
+        System.out.println("You're completely hung.");
+        System.out.println(String.format("The word was: %s", secretWord));
+        System.out.println("You lose.");
+    }
+
+    private void printWinGameMessage() {
+        System.out.println(String.format("You guessed the word: %s", secretWord));
+        System.out.println("You win.");
     }
 }

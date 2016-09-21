@@ -12,32 +12,34 @@ import java.util.Scanner;
 public class Hangman {
     private static final int STARTING_GUESSES = 8;
 
-    private static String guessedWord;
-    private static HangmanLexicon lexicon;
-    private static String secretWord;
+    private String guessedWord;
+    private HangmanLexicon lexicon;
+    private String secretWord;
 
-    private static Scanner scanner;
+    private Scanner scanner;
 
     public static void main(String[] args) throws Exception {
-        setUpGame();
-        playGame();
+        Hangman hangman = new Hangman();
+
+        hangman.setUpGame();
+        hangman.playGame();
     }
 
-    private static void setUpGame() throws Exception {
+    private void setUpGame() throws Exception {
         populateLexicon();
         chooseSecretWord();
         initializeGuessedWord();
     }
 
-    private static void populateLexicon() {
+    private void populateLexicon() {
         lexicon = new HangmanLexicon();
     }
 
-    private static void chooseSecretWord() throws Exception {
+    private void chooseSecretWord() throws Exception {
         secretWord = lexicon.getWord(new Random().nextInt(lexicon.getWordCount()));
     }
 
-    private static void playGame() {
+    private void playGame() {
         System.out.println("Welcome to Hangman!");
 
         scanner = new Scanner(System.in);
@@ -77,7 +79,7 @@ public class Hangman {
         }
     }
 
-    private static void initializeGuessedWord() {
+    private void initializeGuessedWord() {
         guessedWord = "";
 
         for (int i = 0; i < secretWord.length(); i++) {
@@ -85,7 +87,7 @@ public class Hangman {
         }
     }
 
-    private static boolean isLegalGuess(String guess) {
+    private boolean isLegalGuess(String guess) {
         if (guess.length() < 1) {
             return false;
         }
@@ -94,11 +96,11 @@ public class Hangman {
         return guess.length() == 1 && ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'));
     }
 
-    private static boolean isCorrectGuess(String guess) {
+    private boolean isCorrectGuess(String guess) {
         return secretWord.contains(guess);
     }
 
-    private static void updateGuessedWord(String guess) {
+    private void updateGuessedWord(String guess) {
         int fromIndex = 0;
 
         while (true) {
@@ -113,7 +115,7 @@ public class Hangman {
         }
     }
 
-    private static boolean isSecretWordGuessed() {
+    private boolean isSecretWordGuessed() {
         return !guessedWord.contains("-");
     }
 }

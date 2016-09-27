@@ -5,6 +5,7 @@
  * This file keeps track of the Hangman display.
  */
 
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -65,41 +66,47 @@ public class HangmanCanvas {
     }
 
     private void drawScaffold() {
-        drawVerticalBeam();
-        drawHorizontalBeam();
-        drawRope();
+        Point2D verticalBeamEndPoint = drawVerticalBeam();
+        Point2D horizontalBeamEndPoint = drawHorizontalBeam(verticalBeamEndPoint);
+        drawRope(horizontalBeamEndPoint);
     }
 
-    private void drawVerticalBeam() {
+    private Point2D drawVerticalBeam() {
         double startX = CANVAS_WIDTH / 2 - BEAM_LENGTH;
         double endX = startX;
-        double startY = (CANVAS_HEIGHT - SCAFFOLD_HEIGHT) * 1 / 3;
-        double endY = startY + SCAFFOLD_HEIGHT;
+        double startY = (CANVAS_HEIGHT - SCAFFOLD_HEIGHT) * 1 / 3 + SCAFFOLD_HEIGHT;
+        double endY = startY - SCAFFOLD_HEIGHT;
 
         Line verticalBeam = new Line(startX, startY, endX, endY);
 
         rootGroup.getChildren().add(verticalBeam);
+
+        return new Point2D(endX, endY);
     }
 
-    private void drawHorizontalBeam() {
-        double startX = CANVAS_WIDTH / 2 - BEAM_LENGTH;
+    private Point2D drawHorizontalBeam(Point2D startPoint) {
+        double startX = startPoint.getX();
         double endX = startX + BEAM_LENGTH;
-        double startY = (CANVAS_HEIGHT - SCAFFOLD_HEIGHT) * 1 / 3;
+        double startY = startPoint.getY();
         double endY = startY;
 
         Line horizontalBeam = new Line(startX, startY, endX, endY);
 
         rootGroup.getChildren().add(horizontalBeam);
+
+        return new Point2D(endX, endY);
     }
 
-    private void drawRope() {
-        double startX = CANVAS_WIDTH / 2;
+    private Point2D drawRope(Point2D startPoint) {
+        double startX = startPoint.getX();
         double endX = startX;
-        double startY = (CANVAS_HEIGHT - SCAFFOLD_HEIGHT) * 1 / 3;
+        double startY = startPoint.getY();
         double endY = startY + ROPE_LENGTH;
 
         Line rope = new Line(startX, startY, endX, endY);
 
         rootGroup.getChildren().add(rope);
+
+        return new Point2D(endX, endY);
     }
 }

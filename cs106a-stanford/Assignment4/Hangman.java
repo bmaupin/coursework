@@ -9,7 +9,10 @@
 import java.util.Random;
 import java.util.Scanner;
 
-public class Hangman {
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+public class Hangman extends Application {
     private static final int STARTING_GUESSES = 8;
 
     private String guessedWord;
@@ -19,10 +22,18 @@ public class Hangman {
     private Scanner scanner;
 
     public static void main(String[] args) throws Exception {
-        Hangman hangman = new Hangman();
+        launch(args);
+    }
 
-        hangman.setUpGame();
-        hangman.playGame();
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        HangmanCanvas hangmanCanvas = new HangmanCanvas(primaryStage);
+        hangmanCanvas.reset();
+
+        // Hangman hangman = new Hangman();
+        //
+        // hangman.setUpGame();
+        // hangman.playGame();
     }
 
     private void setUpGame() throws Exception {

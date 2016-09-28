@@ -10,16 +10,19 @@ import java.util.Random;
 import java.util.Scanner;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class Hangman extends Application {
     private static final int STARTING_GUESSES = 8;
 
+    private String currentGuessedLetter;
     private String guessedWord;
+    private int guessesRemaining;
+    private HangmanCanvas hangmanCanvas;
     private HangmanLexicon lexicon;
-    private String secretWord;
-
     private Scanner scanner;
+    private String secretWord;
 
     public static void main(String[] args) throws Exception {
         launch(args);
@@ -27,13 +30,8 @@ public class Hangman extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        HangmanCanvas hangmanCanvas = new HangmanCanvas(primaryStage);
-        hangmanCanvas.reset();
-
-        // Hangman hangman = new Hangman();
-        //
-        // hangman.setUpGame();
-        // hangman.playGame();
+        setUpGame();
+        playGame(primaryStage);
     }
 
     private void setUpGame() throws Exception {
@@ -58,44 +56,67 @@ public class Hangman extends Application {
         }
     }
 
-    private void playGame() {
+    // TODO: refactor this beast
+    private void playGame(Stage primaryStage) {
         System.out.println("Welcome to Hangman!");
 
+        hangmanCanvas = new HangmanCanvas(primaryStage);
+        hangmanCanvas.reset();
         scanner = new Scanner(System.in);
-        int guessesRemaining = STARTING_GUESSES;
+        guessesRemaining = STARTING_GUESSES;
 
-        while (true) {
-            System.out.println(String.format("The word now looks like this: %s", guessedWord));
-            System.out.println(String.format("You have %d guesses left.", guessesRemaining));
-            System.out.print("Your guess: ");
-            String guess = scanner.nextLine();
+        Thread taskThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            hangmanCanvas.displayWord(secretWord);
+                        }
+                    });
 
-            if (isLegalGuess(guess)) {
-                guess = guess.toUpperCase();
+                    System.out.println(String.format("The word now looks like this: %s", guessedWord));
+                    System.out.println(String.format("You have %d guesses left.", guessesRemaining));
+                    System.out.print("Your guess: ");
+                    currentGuessedLetter = scanner.nextLine();
 
-                if (isCorrectGuess(guess)) {
-                    System.out.println("That guess is correct.");
-                    updateGuessedWord(guess);
+                    if (isLegalGuess(currentGuessedLetter)) {
+                        currentGuessedLetter = currentGuessedLetter.toUpperCase();
 
-                } else {
-                    System.out.println(String.format("There are no %s's in the word", guess));
-                    guessesRemaining--;
+                        if (isCorrectGuess(currentGuessedLetter)) {
+                            System.out.println("That guess is correct.");
+                            updateGuessedWord(currentGuessedLetter);
+
+                        } else {
+                            System.out.println(String.format("There are no %s's in the word", currentGuessedLetter));
+                            guessesRemaining--;
+
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    hangmanCanvas.noteIncorrectGuess(currentGuessedLetter.charAt(0));
+                                }
+                            });
+                        }
+
+                    } else {
+                        System.out.println("Illegal guess. Please guess again.");
+                    }
+
+                    if (guessesRemaining == 0) {
+                        printLoseGameMessage();
+                        break;
+                    }
+
+                    if (isSecretWordGuessed()) {
+                        printWinGameMessage();
+                        break;
+                    }
                 }
-
-            } else {
-                System.out.println("Illegal guess. Please guess again.");
             }
-
-            if (guessesRemaining == 0) {
-                printLoseGameMessage();
-                break;
-            }
-
-            if (isSecretWordGuessed()) {
-                printWinGameMessage();
-                break;
-            }
-        }
+        });
+        taskThread.start();
     }
 
     private boolean isLegalGuess(String guess) {

@@ -5,7 +5,6 @@
  * This file keeps track of the Hangman display.
  */
 
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -28,6 +27,21 @@ public class HangmanCanvas {
 
     private static final int CANVAS_HEIGHT = 800;
     private static final int CANVAS_WIDTH = 500;
+
+    private static final double VERTICAL_BEAM_START_X = CANVAS_WIDTH / 2 - BEAM_LENGTH;
+    private static final double VERTICAL_BEAM_END_X = VERTICAL_BEAM_START_X;
+    private static final double VERTICAL_BEAM_START_Y = (CANVAS_HEIGHT - SCAFFOLD_HEIGHT) * 1 / 3 + SCAFFOLD_HEIGHT;
+    private static final double VERTICAL_BEAM_END_Y = VERTICAL_BEAM_START_Y - SCAFFOLD_HEIGHT;
+
+    private static final double HORIZONTAL_BEAM_START_X = VERTICAL_BEAM_END_X;
+    private static final double HORIZONTAL_BEAM_END_X = HORIZONTAL_BEAM_START_X + BEAM_LENGTH;
+    private static final double HORIZONTAL_BEAM_START_Y = VERTICAL_BEAM_END_Y;
+    private static final double HORIZONTAL_BEAM_END_Y = HORIZONTAL_BEAM_START_Y;
+
+    private static final double ROPE_START_X = HORIZONTAL_BEAM_END_X;
+    private static final double ROPE_END_X = ROPE_START_X;
+    private static final double ROPE_START_Y = HORIZONTAL_BEAM_END_Y;
+    private static final double ROPE_END_Y = ROPE_START_Y + ROPE_LENGTH;
 
     private Group rootGroup;
 
@@ -66,47 +80,25 @@ public class HangmanCanvas {
     }
 
     private void drawScaffold() {
-        Point2D verticalBeamEndPoint = drawVerticalBeam();
-        Point2D horizontalBeamEndPoint = drawHorizontalBeam(verticalBeamEndPoint);
-        drawRope(horizontalBeamEndPoint);
+        drawVerticalBeam();
+        drawHorizontalBeam();
+        drawRope();
     }
 
-    private Point2D drawVerticalBeam() {
-        double startX = CANVAS_WIDTH / 2 - BEAM_LENGTH;
-        double endX = startX;
-        double startY = (CANVAS_HEIGHT - SCAFFOLD_HEIGHT) * 1 / 3 + SCAFFOLD_HEIGHT;
-        double endY = startY - SCAFFOLD_HEIGHT;
-
-        Line verticalBeam = new Line(startX, startY, endX, endY);
-
+    private void drawVerticalBeam() {
+        Line verticalBeam = new Line(VERTICAL_BEAM_START_X, VERTICAL_BEAM_START_Y, VERTICAL_BEAM_END_X,
+                VERTICAL_BEAM_END_Y);
         rootGroup.getChildren().add(verticalBeam);
-
-        return new Point2D(endX, endY);
     }
 
-    private Point2D drawHorizontalBeam(Point2D startPoint) {
-        double startX = startPoint.getX();
-        double endX = startX + BEAM_LENGTH;
-        double startY = startPoint.getY();
-        double endY = startY;
-
-        Line horizontalBeam = new Line(startX, startY, endX, endY);
-
+    private void drawHorizontalBeam() {
+        Line horizontalBeam = new Line(HORIZONTAL_BEAM_START_X, HORIZONTAL_BEAM_START_Y, HORIZONTAL_BEAM_END_X,
+                HORIZONTAL_BEAM_END_Y);
         rootGroup.getChildren().add(horizontalBeam);
-
-        return new Point2D(endX, endY);
     }
 
-    private Point2D drawRope(Point2D startPoint) {
-        double startX = startPoint.getX();
-        double endX = startX;
-        double startY = startPoint.getY();
-        double endY = startY + ROPE_LENGTH;
-
-        Line rope = new Line(startX, startY, endX, endY);
-
+    private void drawRope() {
+        Line rope = new Line(ROPE_START_X, ROPE_START_Y, ROPE_END_X, ROPE_END_Y);
         rootGroup.getChildren().add(rope);
-
-        return new Point2D(endX, endY);
     }
 }

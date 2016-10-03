@@ -72,7 +72,7 @@ public class Hangman extends Application {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            hangmanCanvas.displayWord(secretWord);
+                            hangmanCanvas.displayWord(guessedWord);
                         }
                     });
 

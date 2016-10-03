@@ -15,6 +15,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class HangmanCanvas {
@@ -107,8 +109,14 @@ public class HangmanCanvas {
     private static final double RIGHT_FOOT_START_Y = RIGHT_LOWER_LEG_END_Y;
     private static final double RIGHT_FOOT_END_Y = RIGHT_FOOT_START_Y;
 
+    private static final double GUESSED_WORD_LABEL_X = CANVAS_WIDTH / 8;
+    private static final double GUESSED_WORD_LABEL_Y = VERTICAL_BEAM_START_Y
+            + ((CANVAS_HEIGHT - VERTICAL_BEAM_START_Y) / 3);
+    private static final int GUESSED_WORD_FONT_SIZE = 32;
+
     private List<Node> bodyParts;
-    private int bodyPartsShown;
+    private Text guessedWordLabel;
+    private int numBodyPartsShown;
     private Group rootGroup;
 
     public HangmanCanvas(Stage primaryStage) {
@@ -134,7 +142,8 @@ public class HangmanCanvas {
     /** Resets the display so that only the scaffold appears */
     public void reset() {
         drawScaffold();
-        bodyPartsShown = 0;
+        numBodyPartsShown = 0;
+        guessedWordLabel = createGuessedWordLabel();
     }
 
     /**
@@ -143,7 +152,7 @@ public class HangmanCanvas {
      * unguessed letters are indicated by hyphens.
      */
     public void displayWord(String word) {
-        // TODO: implement this
+        updateGuessedWord(word);
     }
 
     /**
@@ -154,14 +163,16 @@ public class HangmanCanvas {
      */
     public void noteIncorrectGuess(char letter) {
         addNextBodyPart();
+
+        // TODO: show the list of incorrect guesses
     }
 
     private void addNextBodyPart() {
-        if (bodyPartsShown < bodyParts.size()) {
-            Node bodyPartToAdd = bodyParts.get(bodyPartsShown);
+        if (numBodyPartsShown < bodyParts.size()) {
+            Node bodyPartToAdd = bodyParts.get(numBodyPartsShown);
 
             rootGroup.getChildren().add(bodyPartToAdd);
-            bodyPartsShown++;
+            numBodyPartsShown++;
         }
     }
 
@@ -247,5 +258,18 @@ public class HangmanCanvas {
     private Line createRightFoot() {
         Line rightFoot = new Line(RIGHT_FOOT_START_X, RIGHT_FOOT_START_Y, RIGHT_FOOT_END_X, RIGHT_FOOT_END_Y);
         return rightFoot;
+    }
+
+    private void updateGuessedWord(String guessedWord) {
+        rootGroup.getChildren().remove(guessedWordLabel);
+        guessedWordLabel.setText(guessedWord);
+        rootGroup.getChildren().add(guessedWordLabel);
+    }
+
+    private Text createGuessedWordLabel() {
+        Text guessedWordLabel = new Text(GUESSED_WORD_LABEL_X, GUESSED_WORD_LABEL_Y, "");
+        guessedWordLabel.setFont(new Font(GUESSED_WORD_FONT_SIZE));
+
+        return guessedWordLabel;
     }
 }

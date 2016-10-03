@@ -5,7 +5,11 @@
  * This file keeps track of the Hangman display.
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
@@ -103,6 +107,8 @@ public class HangmanCanvas {
     private static final double RIGHT_FOOT_START_Y = RIGHT_LOWER_LEG_END_Y;
     private static final double RIGHT_FOOT_END_Y = RIGHT_FOOT_START_Y;
 
+    private List<Node> bodyParts;
+    private int bodyPartsShown;
     private Group rootGroup;
 
     public HangmanCanvas(Stage primaryStage) {
@@ -113,11 +119,22 @@ public class HangmanCanvas {
 
         primaryStage.setScene(new Scene(rootGroup));
         primaryStage.show();
+
+        bodyParts = new ArrayList<Node>();
+        bodyParts.add(createHead());
+        bodyParts.add(createBody());
+        bodyParts.add(createLeftArm());
+        bodyParts.add(createRightArm());
+        bodyParts.add(createLeftLeg());
+        bodyParts.add(createRightLeg());
+        bodyParts.add(createLeftFoot());
+        bodyParts.add(createRightFoot());
     }
 
     /** Resets the display so that only the scaffold appears */
     public void reset() {
         drawScaffold();
+        bodyPartsShown = 0;
     }
 
     /**
@@ -136,15 +153,16 @@ public class HangmanCanvas {
      * bottom of the window.
      */
     public void noteIncorrectGuess(char letter) {
-        // TODO: add each body part one at a time
-        drawHead();
-        drawBody();
-        drawLeftArm();
-        drawRightArm();
-        drawLeftLeg();
-        drawRightLeg();
-        drawLeftFoot();
-        drawRightFoot();
+        addNextBodyPart();
+    }
+
+    private void addNextBodyPart() {
+        if (bodyPartsShown < bodyParts.size()) {
+            Node bodyPartToAdd = bodyParts.get(bodyPartsShown);
+
+            rootGroup.getChildren().add(bodyPartToAdd);
+            bodyPartsShown++;
+        }
     }
 
     private void drawScaffold() {
@@ -170,64 +188,64 @@ public class HangmanCanvas {
         rootGroup.getChildren().add(rope);
     }
 
-    private void drawHead() {
+    private Circle createHead() {
         Circle head = new Circle(HEAD_CENTER_X, HEAD_CENTER_Y, HEAD_RADIUS, Color.TRANSPARENT);
         head.setStroke(Color.BLACK);
-        rootGroup.getChildren().add(head);
+        return head;
     }
 
-    private void drawBody() {
+    private Line createBody() {
         Line body = new Line(BODY_START_X, BODY_START_Y, BODY_END_X, BODY_END_Y);
-        rootGroup.getChildren().add(body);
+        return body;
     }
 
-    private void drawLeftArm() {
+    private Group createLeftArm() {
         Line leftUpperArm = new Line(LEFT_UPPER_ARM_START_X, LEFT_UPPER_ARM_START_Y, LEFT_UPPER_ARM_END_X,
                 LEFT_UPPER_ARM_END_Y);
         Line leftLowerArm = new Line(LEFT_LOWER_ARM_START_X, LEFT_LOWER_ARM_START_Y, LEFT_LOWER_ARM_END_X,
                 LEFT_LOWER_ARM_END_Y);
 
         Group leftArm = new Group(leftUpperArm, leftLowerArm);
-        rootGroup.getChildren().add(leftArm);
+        return leftArm;
     }
 
-    private void drawRightArm() {
+    private Group createRightArm() {
         Line rightUpperArm = new Line(RIGHT_UPPER_ARM_START_X, RIGHT_UPPER_ARM_START_Y, RIGHT_UPPER_ARM_END_X,
                 RIGHT_UPPER_ARM_END_Y);
         Line rightLowerArm = new Line(RIGHT_LOWER_ARM_START_X, RIGHT_LOWER_ARM_START_Y, RIGHT_LOWER_ARM_END_X,
                 RIGHT_LOWER_ARM_END_Y);
 
         Group rightArm = new Group(rightUpperArm, rightLowerArm);
-        rootGroup.getChildren().add(rightArm);
+        return rightArm;
     }
 
-    private void drawLeftLeg() {
+    private Group createLeftLeg() {
         Line leftUpperLeg = new Line(LEFT_UPPER_LEG_START_X, LEFT_UPPER_LEG_START_Y, LEFT_UPPER_LEG_END_X,
                 LEFT_UPPER_LEG_END_Y);
         Line leftLowerLeg = new Line(LEFT_LOWER_LEG_START_X, LEFT_LOWER_LEG_START_Y, LEFT_LOWER_LEG_END_X,
                 LEFT_LOWER_LEG_END_Y);
 
         Group leftLeg = new Group(leftUpperLeg, leftLowerLeg);
-        rootGroup.getChildren().add(leftLeg);
+        return leftLeg;
     }
 
-    private void drawRightLeg() {
+    private Group createRightLeg() {
         Line rightUpperLeg = new Line(RIGHT_UPPER_LEG_START_X, RIGHT_UPPER_LEG_START_Y, RIGHT_UPPER_LEG_END_X,
                 RIGHT_UPPER_LEG_END_Y);
         Line rightLowerLeg = new Line(RIGHT_LOWER_LEG_START_X, RIGHT_LOWER_LEG_START_Y, RIGHT_LOWER_LEG_END_X,
                 RIGHT_LOWER_LEG_END_Y);
 
         Group rightLeg = new Group(rightUpperLeg, rightLowerLeg);
-        rootGroup.getChildren().add(rightLeg);
+        return rightLeg;
     }
 
-    private void drawLeftFoot() {
+    private Line createLeftFoot() {
         Line leftFoot = new Line(LEFT_FOOT_START_X, LEFT_FOOT_START_Y, LEFT_FOOT_END_X, LEFT_FOOT_END_Y);
-        rootGroup.getChildren().add(leftFoot);
+        return leftFoot;
     }
 
-    private void drawRightFoot() {
+    private Line createRightFoot() {
         Line rightFoot = new Line(RIGHT_FOOT_START_X, RIGHT_FOOT_START_Y, RIGHT_FOOT_END_X, RIGHT_FOOT_END_Y);
-        rootGroup.getChildren().add(rightFoot);
+        return rightFoot;
     }
 }

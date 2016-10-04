@@ -114,8 +114,13 @@ public class HangmanCanvas {
             + ((CANVAS_HEIGHT - VERTICAL_BEAM_START_Y) / 3);
     private static final int GUESSED_WORD_FONT_SIZE = 32;
 
+    private static final double INCORRECT_GUESSES_LABEL_X = GUESSED_WORD_LABEL_X;
+    private static final double INCORRECT_GUESSES_LABEL_Y = GUESSED_WORD_LABEL_Y + 50;
+    private static final double INCORRECT_GUESSES_FONT_SIZE = 18;
+
     private List<Node> bodyParts;
     private Text guessedWordLabel;
+    private Text incorrectGuessesLabel;
     private int numBodyPartsShown;
     private Group rootGroup;
 
@@ -144,6 +149,7 @@ public class HangmanCanvas {
         drawScaffold();
         numBodyPartsShown = 0;
         guessedWordLabel = createGuessedWordLabel();
+        incorrectGuessesLabel = createIncorrectGuessesLabel();
     }
 
     /**
@@ -163,8 +169,7 @@ public class HangmanCanvas {
      */
     public void noteIncorrectGuess(char letter) {
         addNextBodyPart();
-
-        // TODO: show the list of incorrect guesses
+        updateIncorrectGuesses(letter);
     }
 
     private Circle createHead() {
@@ -258,6 +263,13 @@ public class HangmanCanvas {
         return guessedWordLabel;
     }
 
+    private Text createIncorrectGuessesLabel() {
+        Text incorrectGuessesLabel = new Text(INCORRECT_GUESSES_LABEL_X, INCORRECT_GUESSES_LABEL_Y, "");
+        incorrectGuessesLabel.setFont(new Font(INCORRECT_GUESSES_FONT_SIZE));
+
+        return incorrectGuessesLabel;
+    }
+
     private void updateGuessedWord(String guessedWord) {
         rootGroup.getChildren().remove(guessedWordLabel);
         guessedWordLabel.setText(guessedWord);
@@ -271,5 +283,11 @@ public class HangmanCanvas {
             rootGroup.getChildren().add(bodyPartToAdd);
             numBodyPartsShown++;
         }
+    }
+
+    private void updateIncorrectGuesses(char letter) {
+        rootGroup.getChildren().remove(incorrectGuessesLabel);
+        incorrectGuessesLabel.setText(incorrectGuessesLabel.getText() + letter);
+        rootGroup.getChildren().add(incorrectGuessesLabel);
     }
 }

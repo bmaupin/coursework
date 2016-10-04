@@ -68,14 +68,9 @@ public class Hangman extends Application {
         Thread taskThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            hangmanCanvas.displayWord(guessedWord);
-                        }
-                    });
+                displayGuessedWord();
 
+                while (true) {
                     System.out.println(String.format("The word now looks like this: %s", guessedWord));
                     System.out.println(String.format("You have %d guesses left.", guessesRemaining));
                     System.out.print("Your guess: ");
@@ -87,6 +82,7 @@ public class Hangman extends Application {
                         if (isCorrectGuess(currentGuessedLetter)) {
                             System.out.println("That guess is correct.");
                             updateGuessedWord(currentGuessedLetter);
+                            displayGuessedWord();
 
                         } else {
                             System.out.println(String.format("There are no %s's in the word", currentGuessedLetter));
@@ -117,6 +113,15 @@ public class Hangman extends Application {
             }
         });
         taskThread.start();
+    }
+
+    private void displayGuessedWord() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                hangmanCanvas.displayWord(guessedWord);
+            }
+        });
     }
 
     private boolean isLegalGuess(String guess) {

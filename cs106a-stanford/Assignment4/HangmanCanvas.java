@@ -167,38 +167,6 @@ public class HangmanCanvas {
         // TODO: show the list of incorrect guesses
     }
 
-    private void addNextBodyPart() {
-        if (numBodyPartsShown < bodyParts.size()) {
-            Node bodyPartToAdd = bodyParts.get(numBodyPartsShown);
-
-            rootGroup.getChildren().add(bodyPartToAdd);
-            numBodyPartsShown++;
-        }
-    }
-
-    private void drawScaffold() {
-        drawVerticalBeam();
-        drawHorizontalBeam();
-        drawRope();
-    }
-
-    private void drawVerticalBeam() {
-        Line verticalBeam = new Line(VERTICAL_BEAM_START_X, VERTICAL_BEAM_START_Y, VERTICAL_BEAM_END_X,
-                VERTICAL_BEAM_END_Y);
-        rootGroup.getChildren().add(verticalBeam);
-    }
-
-    private void drawHorizontalBeam() {
-        Line horizontalBeam = new Line(HORIZONTAL_BEAM_START_X, HORIZONTAL_BEAM_START_Y, HORIZONTAL_BEAM_END_X,
-                HORIZONTAL_BEAM_END_Y);
-        rootGroup.getChildren().add(horizontalBeam);
-    }
-
-    private void drawRope() {
-        Line rope = new Line(ROPE_START_X, ROPE_START_Y, ROPE_END_X, ROPE_END_Y);
-        rootGroup.getChildren().add(rope);
-    }
-
     private Circle createHead() {
         Circle head = new Circle(HEAD_CENTER_X, HEAD_CENTER_Y, HEAD_RADIUS, Color.TRANSPARENT);
         head.setStroke(Color.BLACK);
@@ -260,10 +228,27 @@ public class HangmanCanvas {
         return rightFoot;
     }
 
-    private void updateGuessedWord(String guessedWord) {
-        rootGroup.getChildren().remove(guessedWordLabel);
-        guessedWordLabel.setText(guessedWord);
-        rootGroup.getChildren().add(guessedWordLabel);
+    private void drawScaffold() {
+        drawVerticalBeam();
+        drawHorizontalBeam();
+        drawRope();
+    }
+
+    private void drawVerticalBeam() {
+        Line verticalBeam = new Line(VERTICAL_BEAM_START_X, VERTICAL_BEAM_START_Y, VERTICAL_BEAM_END_X,
+                VERTICAL_BEAM_END_Y);
+        rootGroup.getChildren().add(verticalBeam);
+    }
+
+    private void drawHorizontalBeam() {
+        Line horizontalBeam = new Line(HORIZONTAL_BEAM_START_X, HORIZONTAL_BEAM_START_Y, HORIZONTAL_BEAM_END_X,
+                HORIZONTAL_BEAM_END_Y);
+        rootGroup.getChildren().add(horizontalBeam);
+    }
+
+    private void drawRope() {
+        Line rope = new Line(ROPE_START_X, ROPE_START_Y, ROPE_END_X, ROPE_END_Y);
+        rootGroup.getChildren().add(rope);
     }
 
     private Text createGuessedWordLabel() {
@@ -271,5 +256,20 @@ public class HangmanCanvas {
         guessedWordLabel.setFont(new Font(GUESSED_WORD_FONT_SIZE));
 
         return guessedWordLabel;
+    }
+
+    private void updateGuessedWord(String guessedWord) {
+        rootGroup.getChildren().remove(guessedWordLabel);
+        guessedWordLabel.setText(guessedWord);
+        rootGroup.getChildren().add(guessedWordLabel);
+    }
+
+    private void addNextBodyPart() {
+        if (numBodyPartsShown < bodyParts.size()) {
+            Node bodyPartToAdd = bodyParts.get(numBodyPartsShown);
+
+            rootGroup.getChildren().add(bodyPartToAdd);
+            numBodyPartsShown++;
+        }
     }
 }

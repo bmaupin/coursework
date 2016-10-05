@@ -144,34 +144,6 @@ public class HangmanCanvas {
         bodyParts.add(createRightFoot());
     }
 
-    /** Resets the display so that only the scaffold appears */
-    public void reset() {
-        drawScaffold();
-        numBodyPartsShown = 0;
-        guessedWordLabel = createGuessedWordLabel();
-        incorrectGuessesLabel = createIncorrectGuessesLabel();
-    }
-
-    /**
-     * Updates the word on the screen to correspond to the current state of the
-     * game. The argument string shows what letters have been guessed so far;
-     * unguessed letters are indicated by hyphens.
-     */
-    public void displayWord(String word) {
-        updateGuessedWord(word);
-    }
-
-    /**
-     * Updates the display to correspond to an incorrect guess by the user.
-     * Calling this method causes the next body part to appear on the scaffold
-     * and adds the letter to the list of incorrect guesses that appears at the
-     * bottom of the window.
-     */
-    public void noteIncorrectGuess(char letter) {
-        addNextBodyPart();
-        updateIncorrectGuesses(letter);
-    }
-
     private Circle createHead() {
         Circle head = new Circle(HEAD_CENTER_X, HEAD_CENTER_Y, HEAD_RADIUS, Color.TRANSPARENT);
         head.setStroke(Color.BLACK);
@@ -233,6 +205,14 @@ public class HangmanCanvas {
         return rightFoot;
     }
 
+    /** Resets the display so that only the scaffold appears */
+    public void reset() {
+        drawScaffold();
+        numBodyPartsShown = 0;
+        guessedWordLabel = createGuessedWordLabel();
+        incorrectGuessesLabel = createIncorrectGuessesLabel();
+    }
+
     private void drawScaffold() {
         drawVerticalBeam();
         drawHorizontalBeam();
@@ -270,10 +250,30 @@ public class HangmanCanvas {
         return incorrectGuessesLabel;
     }
 
+    /**
+     * Updates the word on the screen to correspond to the current state of the
+     * game. The argument string shows what letters have been guessed so far;
+     * unguessed letters are indicated by hyphens.
+     */
+    public void displayWord(String word) {
+        updateGuessedWord(word);
+    }
+
     private void updateGuessedWord(String guessedWord) {
         rootGroup.getChildren().remove(guessedWordLabel);
         guessedWordLabel.setText(guessedWord);
         rootGroup.getChildren().add(guessedWordLabel);
+    }
+
+    /**
+     * Updates the display to correspond to an incorrect guess by the user.
+     * Calling this method causes the next body part to appear on the scaffold
+     * and adds the letter to the list of incorrect guesses that appears at the
+     * bottom of the window.
+     */
+    public void noteIncorrectGuess(char letter) {
+        addNextBodyPart();
+        updateIncorrectGuesses(letter);
     }
 
     private void addNextBodyPart() {

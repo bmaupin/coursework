@@ -30,14 +30,21 @@ public class Hangman extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        setUpGame();
-        playGame(primaryStage);
+        setUpGame(primaryStage);
+        playGame();
     }
 
-    private void setUpGame() throws Exception {
+    private void setUpGame(Stage primaryStage) throws Exception {
         populateLexicon();
         chooseSecretWord();
         initializeGuessedWord();
+
+        hangmanCanvas = new HangmanCanvas(primaryStage);
+        hangmanCanvas.reset();
+        scanner = new Scanner(System.in);
+        guessesRemaining = STARTING_GUESSES;
+
+        displayWelcomeMessage();
     }
 
     private void populateLexicon() {
@@ -56,57 +63,39 @@ public class Hangman extends Application {
         }
     }
 
-    // TODO: refactor this beast
-    private void playGame(Stage primaryStage) {
+    private void displayWelcomeMessage() {
         System.out.println("Welcome to Hangman!");
+    }
 
-        hangmanCanvas = new HangmanCanvas(primaryStage);
-        hangmanCanvas.reset();
-        scanner = new Scanner(System.in);
-        guessesRemaining = STARTING_GUESSES;
-
+    private void playGame() {
         Thread taskThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                displayGuessedWord();
-
                 while (true) {
-                    System.out.println(String.format("The word now looks like this: %s", guessedWord));
-                    System.out.println(String.format("You have %d guesses left.", guessesRemaining));
-                    System.out.print("Your guess: ");
-                    currentGuessedLetter = scanner.nextLine();
+                    displayGameProgress();
+                    getNextGuess();
 
-                    if (isLegalGuess(currentGuessedLetter)) {
-                        currentGuessedLetter = currentGuessedLetter.toUpperCase();
+                    if (isGuessLegal()) {
+                        convertGuessToUpper();
 
-                        if (isCorrectGuess(currentGuessedLetter)) {
-                            System.out.println("That guess is correct.");
-                            updateGuessedWord(currentGuessedLetter);
-                            displayGuessedWord();
-
+                        if (isGuessCorrect()) {
+                            handleCorrectGuess();
                         } else {
-                            System.out.println(String.format("There are no %s's in the word", currentGuessedLetter));
-                            guessesRemaining--;
-
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    hangmanCanvas.noteIncorrectGuess(currentGuessedLetter.charAt(0));
-                                }
-                            });
+                            handleIncorrectGuess();
                         }
 
                     } else {
-                        System.out.println("Illegal guess. Please guess again.");
-                    }
-
-                    if (guessesRemaining == 0) {
-                        printLoseGameMessage();
-                        break;
+                        handleIllegalGuess();
+                        continue;
                     }
 
                     if (isSecretWordGuessed()) {
-                        printWinGameMessage();
+                        winGame();
+                        break;
+                    }
+
+                    if (noGuessesRemaining()) {
+                        loseGame();
                         break;
                     }
                 }
@@ -115,7 +104,13 @@ public class Hangman extends Application {
         taskThread.start();
     }
 
-    private void displayGuessedWord() {
+    private void displayGameProgress() {
+        System.out.println(String.format("The word now looks like this: %s", guessedWord));
+        System.out.println(String.format("You have %d guesses left.", guessesRemaining));
+        updateGuessedWordGraphics();
+    }
+
+    private void updateGuessedWordGraphics() {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -124,17 +119,32 @@ public class Hangman extends Application {
         });
     }
 
-    private boolean isLegalGuess(String guess) {
-        if (guess.length() < 1) {
+    private void getNextGuess() {
+        System.out.print("Your guess: ");
+        currentGuessedLetter = scanner.nextLine();
+    }
+
+    private boolean isGuessLegal() {
+        if (currentGuessedLetter.length() < 1) {
             return false;
         }
 
-        char ch = guess.charAt(0);
-        return guess.length() == 1 && ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'));
+        char ch = currentGuessedLetter.charAt(0);
+        return currentGuessedLetter.length() == 1 && ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z'));
     }
 
-    private boolean isCorrectGuess(String guess) {
-        return secretWord.contains(guess);
+    private void convertGuessToUpper() {
+        currentGuessedLetter = currentGuessedLetter.toUpperCase();
+    }
+
+    private boolean isGuessCorrect() {
+        return secretWord.contains(currentGuessedLetter);
+    }
+
+    private void handleCorrectGuess() {
+        System.out.println("That guess is correct.");
+        updateGuessedWord(currentGuessedLetter);
+        updateGuessedWordGraphics();
     }
 
     private void updateGuessedWord(String guess) {
@@ -152,18 +162,50 @@ public class Hangman extends Application {
         }
     }
 
+    private void handleIncorrectGuess() {
+        System.out.println(String.format("There are no %s's in the word", currentGuessedLetter));
+        updateIncorrectGuessGraphics();
+        guessesRemaining--;
+    }
+
+    private void updateIncorrectGuessGraphics() {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                hangmanCanvas.noteIncorrectGuess(currentGuessedLetter.charAt(0));
+            }
+        });
+    }
+
+    private void handleIllegalGuess() {
+        System.out.println("Illegal guess. Please guess again.");
+    }
+
     private boolean isSecretWordGuessed() {
         return !guessedWord.contains("-");
+    }
+
+    private void winGame() {
+        updateGuessedWordGraphics();
+        printWinGameMessage();
+    }
+
+    private void printWinGameMessage() {
+        System.out.println(String.format("You guessed the word: %s", secretWord));
+        System.out.println("You win.");
+    }
+
+    private boolean noGuessesRemaining() {
+        return guessesRemaining == 0;
+    }
+
+    private void loseGame() {
+        printLoseGameMessage();
     }
 
     private void printLoseGameMessage() {
         System.out.println("You're completely hung.");
         System.out.println(String.format("The word was: %s", secretWord));
         System.out.println("You lose.");
-    }
-
-    private void printWinGameMessage() {
-        System.out.println(String.format("You guessed the word: %s", secretWord));
-        System.out.println("You win.");
     }
 }

@@ -1,3 +1,4 @@
+
 /*
  * File: HangmanLexicon.java
  * -------------------------
@@ -5,41 +6,39 @@
  * class that you will reimplement for Part III of the assignment.
  */
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class HangmanLexicon {
+    private static final String LEXICON_SOURCE_FILE = "HangmanLexicon.txt";
+
+    private List<String> wordList;
+
+    public HangmanLexicon() {
+        wordList = new ArrayList<String>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(LEXICON_SOURCE_FILE))) {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                wordList.add(line.trim());
+            }
+        } catch (IOException x) {
+            System.err.format("IOException: %s%n", x);
+        }
+    }
+
     /** Returns the number of words in the lexicon. */
     public int getWordCount() {
-        return 10;
+        return wordList.size();
     }
 
     /**
      * Returns the word at the specified index.
-     * 
-     * @throws Exception
      */
-    public String getWord(int index) throws Exception {
-        switch (index) {
-        case 0:
-            return "BUOY";
-        case 1:
-            return "COMPUTER";
-        case 2:
-            return "CONNOISSEUR";
-        case 3:
-            return "DEHYDRATE";
-        case 4:
-            return "FUZZY";
-        case 5:
-            return "HUBBUB";
-        case 6:
-            return "KEYHOLE";
-        case 7:
-            return "QUAGMIRE";
-        case 8:
-            return "SLITHER";
-        case 9:
-            return "ZIRCON";
-        default:
-            throw new Exception("getWord: Illegal index");
-        }
+    public String getWord(int index) {
+        return wordList.get(index);
     };
 }

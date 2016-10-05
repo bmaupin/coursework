@@ -24,17 +24,17 @@ public class Hangman extends Application {
     private Scanner scanner;
     private String secretWord;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         setUpGame(primaryStage);
         playGame();
     }
 
-    private void setUpGame(Stage primaryStage) throws Exception {
+    private void setUpGame(Stage primaryStage) {
         populateLexicon();
         chooseSecretWord();
         initializeGuessedWord();
@@ -51,7 +51,7 @@ public class Hangman extends Application {
         lexicon = new HangmanLexicon();
     }
 
-    private void chooseSecretWord() throws Exception {
+    private void chooseSecretWord() {
         secretWord = lexicon.getWord(new Random().nextInt(lexicon.getWordCount()));
     }
 

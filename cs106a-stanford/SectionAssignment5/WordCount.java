@@ -9,14 +9,19 @@ public class WordCount {
     private int wordCount = 0;
 
     private String fileName;
+    private BufferedReader reader;
     private Scanner scanner;
 
     public static void main(String[] args) {
         WordCount wordCount = new WordCount();
-        wordCount.run();
+        try {
+            wordCount.run();
+        } catch (IOException e) {
+            System.err.format("IOException: %s%n", e);
+        }
     }
 
-    private void run() {
+    private void run() throws IOException {
         getFileName();
         calculateCounts();
         displayCounts();
@@ -28,23 +33,18 @@ public class WordCount {
         fileName = scanner.nextLine();
     }
 
-    private void calculateCounts() {
-        calculateLineCount();
+    private void calculateCounts() throws IOException {
+        reader = new BufferedReader(new FileReader(fileName));
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            updateLineCount();
+            updateWordCount(line);
+            updateCharCount(line);
+        }
     }
 
-    private void calculateLineCount() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                lineCount++;
-                updateWordCount(line);
-                updateCharCount(line);
-
-                System.out.println(line);
-            }
-        } catch (IOException x) {
-            System.err.format("IOException: %s%n", x);
-        }
+    private void updateLineCount() {
+        lineCount++;
     }
 
     private void updateWordCount(String line) {
@@ -52,11 +52,7 @@ public class WordCount {
     }
 
     private void updateCharCount(String line) {
-        char[] lineChars = line.toCharArray();
-
-        for (int i = 1; i < lineChars.length; i++) {
-            charCount++;
-        }
+        charCount += line.length();
     }
 
     private void displayCounts() {

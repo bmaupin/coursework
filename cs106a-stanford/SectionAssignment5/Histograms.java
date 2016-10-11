@@ -17,14 +17,17 @@ public class Histograms {
     }
 
     private void run() {
-        readInputFile();
+        initializeHistogram();
+        readHistogramData();
         displayHistogram();
     }
 
-    private void readInputFile() {
+    private void initializeHistogram() {
         histogramRanges = new String[MAX_VALUE / VALUE_RANGE + 1];
         Arrays.fill(histogramRanges, "");
+    }
 
+    private void readHistogramData() {
         try {
             reader = new BufferedReader(new FileReader(INPUT_FILENAME));
             String line = null;

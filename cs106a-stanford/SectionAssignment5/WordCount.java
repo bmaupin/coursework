@@ -8,20 +8,16 @@ public class WordCount {
     private int lineCount = 0;
     private int wordCount = 0;
 
-    private String fileName;
+    private String inputFilename;
     private BufferedReader reader;
     private Scanner scanner;
 
     public static void main(String[] args) {
         WordCount wordCount = new WordCount();
-        try {
-            wordCount.run();
-        } catch (IOException e) {
-            System.err.format("IOException: %s%n", e);
-        }
+        wordCount.run();
     }
 
-    private void run() throws IOException {
+    private void run() {
         getFileName();
         calculateCounts();
         displayCounts();
@@ -30,16 +26,20 @@ public class WordCount {
     private void getFileName() {
         scanner = new Scanner(System.in);
         System.out.print("File: ");
-        fileName = scanner.nextLine();
+        inputFilename = scanner.nextLine();
     }
 
-    private void calculateCounts() throws IOException {
-        reader = new BufferedReader(new FileReader(fileName));
-        String line = null;
-        while ((line = reader.readLine()) != null) {
-            updateLineCount();
-            updateWordCount(line);
-            updateCharCount(line);
+    private void calculateCounts() {
+        try {
+            reader = new BufferedReader(new FileReader(inputFilename));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                updateLineCount();
+                updateWordCount(line);
+                updateCharCount(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -7,8 +7,8 @@ public class UniqueNames {
     private List<String> uniqueNames;
 
     public static void main(String[] args) {
-        UniqueNames uniqueNames = new UniqueNames();
-        uniqueNames.run();
+        UniqueNames uniqueNamesApp = new UniqueNames();
+        uniqueNamesApp.run();
     }
 
     private void run() {

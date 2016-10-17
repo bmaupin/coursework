@@ -10,9 +10,13 @@ import acm.program.GraphicsProgram;
 import acm.util.RandomGenerator;
 
 public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
+    private String currentPlayerName;
+    private int currentPlayerNumber;
+
+    private int[] diceValues;
+    private YahtzeeDisplay display;
     private int nPlayers;
     private String[] playerNames;
-    private YahtzeeDisplay display;
     private RandomGenerator rgen = new RandomGenerator();
 
     public static void main(String[] args) {
@@ -37,20 +41,48 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 
     private void playTurn() {
         // TODO: change currentPlayerNumber
-        int currentPlayerNumber = 1;
-        String currentPlayerName = playerNames[currentPlayerNumber - 1];
+        currentPlayerNumber = 1;
+        currentPlayerName = playerNames[currentPlayerNumber - 1];
+        handleFirstDiceRoll();
+        handleSubsequentDiceRoll();
+        handleSubsequentDiceRoll();
+        handleCategorySelection();
+    }
+
+    private void handleFirstDiceRoll() {
         display.printMessage(
                 String.format("%s's turn! Click \"Roll Dice\" button to roll the dice.", currentPlayerName));
         display.waitForPlayerToClickRoll(currentPlayerNumber);
-        rollDice();
-        display.waitForPlayerToSelectDice();
-    }
-
-    private void rollDice() {
-        int[] diceValues = new int[N_DICE];
+        diceValues = new int[N_DICE];
         for (int i = 0; i < N_DICE; i++) {
             diceValues[i] = rgen.nextInt(1, 6);
         }
         display.displayDice(diceValues);
+    }
+
+    private void handleSubsequentDiceRoll() {
+        display.printMessage("Select the dice you wish to re-roll and click \"Roll Again\".");
+        display.waitForPlayerToSelectDice();
+        for (int i = 0; i < N_DICE; i++) {
+            if (display.isDieSelected(i)) {
+                diceValues[i] = rgen.nextInt(1, 6);
+            }
+        }
+        display.displayDice(diceValues);
+    }
+
+    private void handleCategorySelection() {
+        display.printMessage("Select a category for this roll.");
+        int category;
+        while (true) {
+            category = display.waitForPlayerToSelectCategory();
+            if (YahtzeeMagicStub.checkCategory(diceValues, category)) {
+                display.printMessage("Test");
+                break;
+            } else {
+                display.printMessage("Invalid category selected. Please select another.");
+            }
+        }
+        // display.updateScorecard(category, currentPlayerNumber, score);
     }
 }

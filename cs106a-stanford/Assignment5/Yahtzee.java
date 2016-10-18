@@ -10,6 +10,7 @@ import acm.program.GraphicsProgram;
 import acm.util.RandomGenerator;
 
 public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
+    private int category;
     private String currentPlayerName;
     private int currentPlayerNumber;
 
@@ -47,6 +48,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         handleSubsequentDiceRoll();
         handleSubsequentDiceRoll();
         handleCategorySelection();
+        updateScore();
     }
 
     private void handleFirstDiceRoll() {
@@ -54,7 +56,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
                 String.format("%s's turn! Click \"Roll Dice\" button to roll the dice.", currentPlayerName));
         display.waitForPlayerToClickRoll(currentPlayerNumber);
         diceValues = new int[N_DICE];
-        for (int i = 0; i < N_DICE; i++) {
+        for (int i = 0; i < diceValues.length; i++) {
             diceValues[i] = rgen.nextInt(1, 6);
         }
         display.displayDice(diceValues);
@@ -63,7 +65,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private void handleSubsequentDiceRoll() {
         display.printMessage("Select the dice you wish to re-roll and click \"Roll Again\".");
         display.waitForPlayerToSelectDice();
-        for (int i = 0; i < N_DICE; i++) {
+        for (int i = 0; i < diceValues.length; i++) {
             if (display.isDieSelected(i)) {
                 diceValues[i] = rgen.nextInt(1, 6);
             }
@@ -73,16 +75,81 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 
     private void handleCategorySelection() {
         display.printMessage("Select a category for this roll.");
-        int category;
         while (true) {
             category = display.waitForPlayerToSelectCategory();
             if (YahtzeeMagicStub.checkCategory(diceValues, category)) {
-                display.printMessage("Test");
                 break;
             } else {
                 display.printMessage("Invalid category selected. Please select another.");
             }
         }
+    }
+
+    private int calculateScore() {
+        int score = 0;
+
+        switch (category) {
+        case ONES:
+            for (int diceValue : diceValues) {
+                if (diceValue == 1) {
+                    score += 1;
+                }
+            }
+            break;
+        case TWOS:
+            for (int diceValue : diceValues) {
+                if (diceValue == 2) {
+                    score += 2;
+                }
+            }
+            break;
+        case THREES:
+            for (int diceValue : diceValues) {
+                if (diceValue == 3) {
+                    score += 3;
+                }
+            }
+            break;
+        case FOURS:
+            // TODO
+            break;
+        case FIVES:
+            // TODO
+            break;
+        case SIXES:
+            // TODO
+            break;
+        case THREE_OF_A_KIND:
+            // TODO
+            break;
+        case FOUR_OF_A_KIND:
+            // TODO
+            break;
+        case FULL_HOUSE:
+            score = 35;
+            break;
+        case SMALL_STRAIGHT:
+            score = 30;
+            break;
+        case LARGE_STRAIGHT:
+            score = 40;
+            break;
+        case YAHTZEE:
+            score = 50;
+            break;
+        case CHANCE:
+            // TODO
+            break;
+        default:
+        }
+
+        return score;
+    }
+
+    private void updateScore() {
+        int score = calculateScore();
+        // TODO
+        display.printMessage("Score: " + score);
         // display.updateScorecard(category, currentPlayerNumber, score);
     }
 }

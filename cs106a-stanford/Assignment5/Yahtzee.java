@@ -5,6 +5,8 @@
  * This program will eventually play the Yahtzee game.
  */
 
+import java.util.Arrays;
+
 import acm.io.IODialog;
 import acm.program.GraphicsProgram;
 import acm.util.RandomGenerator;
@@ -90,25 +92,23 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 
         switch (category) {
         case ONES:
-            for (int diceValue : diceValues) {
-                if (diceValue == 1) {
-                    score += 1;
-                }
-            }
+            score = Arrays.stream(diceValues).filter(w -> w == 1).sum();
             break;
         case TWOS:
-            for (int diceValue : diceValues) {
-                if (diceValue == 2) {
-                    score += 2;
-                }
-            }
+            // TODO
+            // for (int diceValue : diceValues) {
+            // if (diceValue == 2) {
+            // score += 2;
+            // }
+            // }
             break;
         case THREES:
-            for (int diceValue : diceValues) {
-                if (diceValue == 3) {
-                    score += 3;
-                }
-            }
+            // TODO
+            // for (int diceValue : diceValues) {
+            // if (diceValue == 3) {
+            // score += 3;
+            // }
+            // }
             break;
         case FOURS:
             // TODO
@@ -138,7 +138,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
             score = 50;
             break;
         case CHANCE:
-            // TODO
+            score = Arrays.stream(diceValues).sum();
             break;
         default:
         }

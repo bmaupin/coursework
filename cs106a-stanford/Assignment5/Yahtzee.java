@@ -94,59 +94,35 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 
         switch (category) {
         case ONES:
-            score = Arrays.stream(diceValues)
-                    .filter(v -> v == 1)
-                    .sum();
+            score = getSpecificDiceValueScore(1);
             break;
 
         case TWOS:
-            score = Arrays.stream(diceValues)
-                    .filter(v -> v == 2)
-                    .sum();
+            score = getSpecificDiceValueScore(2);
             break;
 
         case THREES:
-            score = Arrays.stream(diceValues)
-                    .filter(v -> v == 3)
-                    .sum();
+            score = getSpecificDiceValueScore(3);
             break;
 
         case FOURS:
-            score = Arrays.stream(diceValues)
-                    .filter(v -> v == 4)
-                    .sum();
+            score = getSpecificDiceValueScore(4);
             break;
 
         case FIVES:
-            score = Arrays.stream(diceValues)
-                    .filter(v -> v == 5)
-                    .sum();
+            score = getSpecificDiceValueScore(5);
             break;
 
         case SIXES:
-            score = Arrays.stream(diceValues)
-                    .filter(v -> v == 6)
-                    .sum();
+            score = getSpecificDiceValueScore(6);
             break;
 
         case THREE_OF_A_KIND:
-            for (Map.Entry<Integer, Integer> entry : getDiceValueCounts().entrySet()) {
-                int diceValue = entry.getKey();
-                int diceValueCount = entry.getValue();
-                if (diceValueCount >= 3) {
-                    score = diceValue * diceValueCount;
-                }
-            }
+            score = getNumOfKindScore(3);
             break;
 
         case FOUR_OF_A_KIND:
-            for (Map.Entry<Integer, Integer> entry : getDiceValueCounts().entrySet()) {
-                int diceValue = entry.getKey();
-                int diceValueCount = entry.getValue();
-                if (diceValueCount >= 4) {
-                    score = diceValue * diceValueCount;
-                }
-            }
+            score = getNumOfKindScore(4);
             break;
 
         case FULL_HOUSE:
@@ -174,6 +150,24 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         }
 
         return score;
+    }
+
+    private int getSpecificDiceValueScore(int value) {
+        return Arrays.stream(diceValues)
+                .filter(v -> v == value)
+                .sum();
+    }
+
+    private int getNumOfKindScore(int minCount) {
+        for (Map.Entry<Integer, Integer> entry : getDiceValueCounts().entrySet()) {
+            int diceValue = entry.getKey();
+            int diceValueCount = entry.getValue();
+            if (diceValueCount >= minCount) {
+                return diceValue * diceValueCount;
+            }
+        }
+
+        return 0;
     }
 
     private Map<Integer, Integer> getDiceValueCounts() {

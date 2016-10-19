@@ -6,6 +6,8 @@
  */
 
 import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import acm.io.IODialog;
 import acm.program.GraphicsProgram;
@@ -92,54 +94,74 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 
         switch (category) {
         case ONES:
-            score = Arrays.stream(diceValues).filter(w -> w == 1).sum();
+            score = Arrays.stream(diceValues)
+                    .filter(v -> v == 1)
+                    .sum();
             break;
+
         case TWOS:
-            // TODO
-            // for (int diceValue : diceValues) {
-            // if (diceValue == 2) {
-            // score += 2;
-            // }
-            // }
+            score = Arrays.stream(diceValues)
+                    .filter(v -> v == 2)
+                    .sum();
             break;
+
         case THREES:
-            // TODO
-            // for (int diceValue : diceValues) {
-            // if (diceValue == 3) {
-            // score += 3;
-            // }
-            // }
+            score = Arrays.stream(diceValues)
+                    .filter(v -> v == 3)
+                    .sum();
             break;
+
         case FOURS:
-            // TODO
+            score = Arrays.stream(diceValues)
+                    .filter(v -> v == 4)
+                    .sum();
             break;
+
         case FIVES:
-            // TODO
+            score = Arrays.stream(diceValues)
+                    .filter(v -> v == 5)
+                    .sum();
             break;
+
         case SIXES:
-            // TODO
+            score = Arrays.stream(diceValues)
+                    .filter(v -> v == 6)
+                    .sum();
             break;
+
         case THREE_OF_A_KIND:
             // TODO
+            Map<Object, Long> diceValueCounts = Arrays.stream(diceValues)
+                    .boxed()
+                    .collect(Collectors.groupingBy(v -> v, Collectors.counting()));
+            display.printMessage("Score: " + diceValueCounts);
             break;
+
         case FOUR_OF_A_KIND:
             // TODO
             break;
+
         case FULL_HOUSE:
             score = 35;
             break;
+
         case SMALL_STRAIGHT:
             score = 30;
             break;
+
         case LARGE_STRAIGHT:
             score = 40;
             break;
+
         case YAHTZEE:
             score = 50;
             break;
+
         case CHANCE:
-            score = Arrays.stream(diceValues).sum();
+            score = Arrays.stream(diceValues)
+                    .sum();
             break;
+
         default:
         }
 
@@ -149,7 +171,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private void updateScore() {
         int score = calculateScore();
         // TODO
-        display.printMessage("Score: " + score);
+        // display.printMessage("Score: " + score);
         // display.updateScorecard(category, currentPlayerNumber, score);
     }
 }

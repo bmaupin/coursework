@@ -8,7 +8,6 @@
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import acm.io.IODialog;
 import acm.program.GraphicsProgram;
@@ -131,23 +130,23 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
             break;
 
         case THREE_OF_A_KIND:
-            // TODO
-            Map<Object, Long> diceValueCounts = Arrays.stream(diceValues)
-                    .boxed()
-                    .collect(Collectors.groupingBy(v -> v, Collectors.counting()));
-            System.out.println("diceValueCounts=" + diceValueCounts);
-
-            Map<Integer, Integer> diceValueCounts2 = new HashMap<Integer, Integer>();
-            for (int diceValue : diceValues) {
-                int diceValueCount = diceValueCounts2.getOrDefault(diceValue, 0) + 1;
-                diceValueCounts2.put(diceValue, diceValueCount);
+            for (Map.Entry<Integer, Integer> entry : getDiceValueCounts().entrySet()) {
+                int diceValue = entry.getKey();
+                int diceValueCount = entry.getValue();
+                if (diceValueCount >= 3) {
+                    score = diceValue * diceValueCount;
+                }
             }
-            System.out.println("diceValueCounts2=" + diceValueCounts2);
-
             break;
 
         case FOUR_OF_A_KIND:
-            // TODO
+            for (Map.Entry<Integer, Integer> entry : getDiceValueCounts().entrySet()) {
+                int diceValue = entry.getKey();
+                int diceValueCount = entry.getValue();
+                if (diceValueCount >= 4) {
+                    score = diceValue * diceValueCount;
+                }
+            }
             break;
 
         case FULL_HOUSE:
@@ -175,6 +174,16 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         }
 
         return score;
+    }
+
+    private Map<Integer, Integer> getDiceValueCounts() {
+        Map<Integer, Integer> diceValueCounts = new HashMap<Integer, Integer>();
+        for (int diceValue : diceValues) {
+            int diceValueCount = diceValueCounts.getOrDefault(diceValue, 0) + 1;
+            diceValueCounts.put(diceValue, diceValueCount);
+        }
+
+        return diceValueCounts;
     }
 
     private void updateScore() {

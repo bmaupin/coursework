@@ -6,6 +6,7 @@
  */
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -134,7 +135,15 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
             Map<Object, Long> diceValueCounts = Arrays.stream(diceValues)
                     .boxed()
                     .collect(Collectors.groupingBy(v -> v, Collectors.counting()));
-            display.printMessage("Score: " + diceValueCounts);
+            System.out.println("diceValueCounts=" + diceValueCounts);
+
+            Map<Integer, Integer> diceValueCounts2 = new HashMap<Integer, Integer>();
+            for (int diceValue : diceValues) {
+                int diceValueCount = diceValueCounts2.getOrDefault(diceValue, 0) + 1;
+                diceValueCounts2.put(diceValue, diceValueCount);
+            }
+            System.out.println("diceValueCounts2=" + diceValueCounts2);
+
             break;
 
         case FOUR_OF_A_KIND:
@@ -171,7 +180,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private void updateScore() {
         int score = calculateScore();
         // TODO
-        // display.printMessage("Score: " + score);
+        display.printMessage("Score: " + score);
         // display.updateScorecard(category, currentPlayerNumber, score);
     }
 }

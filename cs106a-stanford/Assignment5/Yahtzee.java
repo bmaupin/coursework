@@ -15,6 +15,7 @@ import acm.util.RandomGenerator;
 
 public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private int category;
+    private int currentPlayerIndex;
     private String currentPlayerName;
     private int currentPlayerNumber;
 
@@ -22,6 +23,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private YahtzeeDisplay display;
     private int nPlayers;
     private String[] playerNames;
+    private int[][] playerScores;
     private RandomGenerator rgen = new RandomGenerator();
 
     public static void main(String[] args) {
@@ -30,14 +32,19 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 
     @Override
     public void run() {
+        setUpGame();
+        playGame();
+    }
+
+    private void setUpGame() {
         IODialog dialog = getDialog();
         nPlayers = dialog.readInt("Enter number of players");
         playerNames = new String[nPlayers];
+        playerScores = new int[nPlayers][N_CATEGORIES];
         for (int i = 1; i <= nPlayers; i++) {
             playerNames[i - 1] = dialog.readLine("Enter name for player " + i);
         }
         display = new YahtzeeDisplay(getGCanvas(), playerNames);
-        playGame();
     }
 
     private void playGame() {
@@ -45,9 +52,10 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     }
 
     private void playTurn() {
-        // TODO: change currentPlayerNumber
-        currentPlayerNumber = 1;
-        currentPlayerName = playerNames[currentPlayerNumber - 1];
+        // TODO: change currentPlayerIndex
+        currentPlayerIndex = 0;
+        currentPlayerNumber = currentPlayerIndex + 1;
+        currentPlayerName = playerNames[currentPlayerIndex];
         handleFirstDiceRoll();
         handleSubsequentDiceRoll();
         handleSubsequentDiceRoll();
@@ -81,6 +89,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         display.printMessage("Select a category for this roll.");
         while (true) {
             category = display.waitForPlayerToSelectCategory();
+            // TODO: implement YahtzeeMagicStub.checkCategory
             if (YahtzeeMagicStub.checkCategory(diceValues, category)) {
                 break;
             } else {
@@ -126,7 +135,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
             break;
 
         case FULL_HOUSE:
-            score = 35;
+            score = 25;
             break;
 
         case SMALL_STRAIGHT:
@@ -182,8 +191,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 
     private void updateScore() {
         int score = calculateScore();
-        // TODO
-        display.printMessage("Score: " + score);
-        // display.updateScorecard(category, currentPlayerNumber, score);
+        playerScores[currentPlayerIndex][category] = score;
+        display.updateScorecard(category, currentPlayerNumber, score);
     }
 }

@@ -56,11 +56,11 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     }
 
     private void setFirstPlayer() {
-        setCurrentPlayer(0);
+        currentPlayerIndex = 0;
+        setCurrentPlayer();
     }
 
-    private void setCurrentPlayer(int playerIndex) {
-        currentPlayerIndex = playerIndex;
+    private void setCurrentPlayer() {
         currentPlayerNumber = currentPlayerIndex + 1;
         currentPlayerName = playerNames[currentPlayerIndex];
     }
@@ -75,7 +75,11 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     }
 
     private void setNextPlayer() {
-        setCurrentPlayer((currentPlayerIndex == 0) ? 1 : 0);
+        currentPlayerIndex++;
+        if (currentPlayerIndex >= nPlayers) {
+            currentPlayerIndex = 0;
+        }
+        setCurrentPlayer();
     }
 
     private void handleFirstDiceRoll() {

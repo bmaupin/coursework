@@ -48,19 +48,34 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     }
 
     private void playGame() {
-        playTurn();
+        setFirstPlayer();
+
+        while (true) {
+            playTurn();
+        }
+    }
+
+    private void setFirstPlayer() {
+        setCurrentPlayer(0);
+    }
+
+    private void setCurrentPlayer(int playerIndex) {
+        currentPlayerIndex = playerIndex;
+        currentPlayerNumber = currentPlayerIndex + 1;
+        currentPlayerName = playerNames[currentPlayerIndex];
     }
 
     private void playTurn() {
-        // TODO: change currentPlayerIndex
-        currentPlayerIndex = 0;
-        currentPlayerNumber = currentPlayerIndex + 1;
-        currentPlayerName = playerNames[currentPlayerIndex];
         handleFirstDiceRoll();
         handleSubsequentDiceRoll();
         handleSubsequentDiceRoll();
         handleCategorySelection();
         updateScore();
+        setNextPlayer();
+    }
+
+    private void setNextPlayer() {
+        setCurrentPlayer((currentPlayerIndex == 0) ? 1 : 0);
     }
 
     private void handleFirstDiceRoll() {

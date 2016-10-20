@@ -127,11 +127,11 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
             break;
 
         case THREE_OF_A_KIND:
-            score = getNumOfKindScore(3);
+            score = getTotalDiceValueScore();
             break;
 
         case FOUR_OF_A_KIND:
-            score = getNumOfKindScore(4);
+            score = getTotalDiceValueScore();
             break;
 
         case FULL_HOUSE:
@@ -151,8 +151,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
             break;
 
         case CHANCE:
-            score = Arrays.stream(diceValues)
-                    .sum();
+            score = getTotalDiceValueScore();
             break;
 
         default:
@@ -167,16 +166,9 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
                 .sum();
     }
 
-    private int getNumOfKindScore(int minCount) {
-        for (Map.Entry<Integer, Integer> entry : getDiceValueCounts().entrySet()) {
-            int diceValue = entry.getKey();
-            int diceValueCount = entry.getValue();
-            if (diceValueCount >= minCount) {
-                return diceValue * diceValueCount;
-            }
-        }
-
-        return 0;
+    private int getTotalDiceValueScore() {
+        return Arrays.stream(diceValues)
+                .sum();
     }
 
     private Map<Integer, Integer> getDiceValueCounts() {

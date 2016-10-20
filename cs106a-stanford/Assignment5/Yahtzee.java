@@ -18,6 +18,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private int currentPlayerIndex;
     private String currentPlayerName;
     private int currentPlayerNumber;
+    private int currentTurnNumber;
 
     private int[] diceValues;
     private YahtzeeDisplay display;
@@ -50,7 +51,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private void playGame() {
         setFirstPlayer();
 
-        while (true) {
+        for (currentTurnNumber = 1; currentTurnNumber <= N_SCORING_CATEGORIES; currentTurnNumber++) {
             playTurn();
         }
     }
@@ -106,6 +107,8 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 
     private void handleCategorySelection() {
         display.printMessage("Select a category for this roll.");
+        // TODO: don't allow the same category to be selected more than once
+        // TODO: allow selection of invalid category with a score of 0
         while (true) {
             category = display.waitForPlayerToSelectCategory();
             // TODO: implement YahtzeeMagicStub.checkCategory

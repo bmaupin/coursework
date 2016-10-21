@@ -41,7 +41,8 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         IODialog dialog = getDialog();
         nPlayers = dialog.readInt("Enter number of players");
         playerNames = new String[nPlayers];
-        playerScores = new int[nPlayers][N_CATEGORIES];
+        // For whatever reason, the categories are numbered starting with 1
+        playerScores = new int[nPlayers][N_CATEGORIES + 1];
         for (int i = 1; i <= nPlayers; i++) {
             playerNames[i - 1] = dialog.readLine("Enter name for player " + i);
         }
@@ -118,6 +119,12 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
                 display.printMessage("Invalid category selected. Please select another.");
             }
         }
+    }
+
+    private void updateScore() {
+        int score = calculateScore();
+        updateCurrentCategoryScore(score);
+        updateTotalScore(score);
     }
 
     private int calculateScore() {
@@ -203,9 +210,13 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         return diceValueCounts;
     }
 
-    private void updateScore() {
-        int score = calculateScore();
+    private void updateCurrentCategoryScore(int score) {
         playerScores[currentPlayerIndex][category] = score;
         display.updateScorecard(category, currentPlayerNumber, score);
+    }
+
+    private void updateTotalScore(int score) {
+        playerScores[currentPlayerIndex][TOTAL] += score;
+        display.updateScorecard(TOTAL, currentPlayerNumber, playerScores[currentPlayerIndex][TOTAL]);
     }
 }

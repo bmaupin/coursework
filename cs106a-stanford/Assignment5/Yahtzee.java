@@ -5,6 +5,7 @@
  * This program will eventually play the Yahtzee game.
  */
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private String[] playerNames;
     private int[][] playerScores;
     private RandomGenerator rgen = new RandomGenerator();
+    private Map<Integer, ArrayList<Integer>> usedCategories = new HashMap<Integer, ArrayList<Integer>>();
 
     public static void main(String[] args) {
         new Yahtzee().start(args);
@@ -108,8 +110,20 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 
     private void handleCategorySelection() {
         display.printMessage("Select a category for this roll.");
-        // TODO: don't allow the same category to be selected more than once
-        category = display.waitForPlayerToSelectCategory();
+        while (true) {
+            category = display.waitForPlayerToSelectCategory();
+
+            if (!usedCategories.containsKey(currentPlayerIndex)) {
+                usedCategories.put(currentPlayerIndex, new ArrayList<Integer>());
+            }
+
+            if (usedCategories.get(currentPlayerIndex).contains(category)) {
+                display.printMessage("Category already used. Please select another.");
+            } else {
+                usedCategories.get(currentPlayerIndex).add(category);
+                break;
+            }
+        }
     }
 
     private void updateScore() {

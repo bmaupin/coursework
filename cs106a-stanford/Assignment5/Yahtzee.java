@@ -109,16 +109,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private void handleCategorySelection() {
         display.printMessage("Select a category for this roll.");
         // TODO: don't allow the same category to be selected more than once
-        // TODO: allow selection of invalid category with a score of 0
-        while (true) {
-            category = display.waitForPlayerToSelectCategory();
-            // TODO: implement YahtzeeMagicStub.checkCategory
-            if (YahtzeeMagicStub.checkCategory(diceValues, category)) {
-                break;
-            } else {
-                display.printMessage("Invalid category selected. Please select another.");
-            }
-        }
+        category = display.waitForPlayerToSelectCategory();
     }
 
     private void updateScore() {
@@ -129,6 +120,11 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
 
     private int calculateScore() {
         int score = 0;
+
+        // TODO: implement YahtzeeMagicStub.checkCategory
+        if (!YahtzeeMagicStub.checkCategory(diceValues, category)) {
+            return score;
+        }
 
         switch (category) {
         case ONES:

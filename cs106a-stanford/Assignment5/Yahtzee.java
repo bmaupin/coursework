@@ -15,10 +15,9 @@ import acm.program.GraphicsProgram;
 import acm.util.RandomGenerator;
 
 public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
-    private int category;
+    private int currentCategory;
     private int currentPlayerIndex;
     private String currentPlayerName;
-    private int currentPlayerNumber;
     private int currentTurnNumber;
 
     private int[] diceValues;
@@ -65,7 +64,6 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     }
 
     private void setCurrentPlayer() {
-        currentPlayerNumber = currentPlayerIndex + 1;
         currentPlayerName = playerNames[currentPlayerIndex];
     }
 
@@ -74,7 +72,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         handleSubsequentDiceRoll();
         handleSubsequentDiceRoll();
         handleCategorySelection();
-        updateScore();
+        updateCurrentPlayerScore();
         setNextPlayer();
     }
 
@@ -89,12 +87,16 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private void handleFirstDiceRoll() {
         display.printMessage(
                 String.format("%s's turn! Click \"Roll Dice\" button to roll the dice.", currentPlayerName));
-        display.waitForPlayerToClickRoll(currentPlayerNumber);
+        display.waitForPlayerToClickRoll(getPlayerNumber(currentPlayerIndex));
         diceValues = new int[N_DICE];
         for (int i = 0; i < diceValues.length; i++) {
             diceValues[i] = rgen.nextInt(1, 6);
         }
         display.displayDice(diceValues);
+    }
+
+    private int getPlayerNumber(int playerIndex) {
+        return playerIndex + 1;
     }
 
     private void handleSubsequentDiceRoll() {
@@ -111,36 +113,36 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private void handleCategorySelection() {
         display.printMessage("Select a category for this roll.");
         while (true) {
-            category = display.waitForPlayerToSelectCategory();
+            currentCategory = display.waitForPlayerToSelectCategory();
 
             if (!usedCategories.containsKey(currentPlayerIndex)) {
                 usedCategories.put(currentPlayerIndex, new ArrayList<Integer>());
             }
 
-            if (usedCategories.get(currentPlayerIndex).contains(category)) {
+            if (usedCategories.get(currentPlayerIndex).contains(currentCategory)) {
                 display.printMessage("Category already used. Please select another.");
             } else {
-                usedCategories.get(currentPlayerIndex).add(category);
+                usedCategories.get(currentPlayerIndex).add(currentCategory);
                 break;
             }
         }
     }
 
-    private void updateScore() {
-        int score = calculateScore();
+    private void updateCurrentPlayerScore() {
+        int score = calculateCurrentCategoryScore();
         updateCurrentCategoryScore(score);
         updateTotalScore(score);
     }
 
-    private int calculateScore() {
+    private int calculateCurrentCategoryScore() {
         int score = 0;
 
         // TODO: implement YahtzeeMagicStub.checkCategory
-        if (!YahtzeeMagicStub.checkCategory(diceValues, category)) {
+        if (!YahtzeeMagicStub.checkCategory(diceValues, currentCategory)) {
             return score;
         }
 
-        switch (category) {
+        switch (currentCategory) {
         case ONES:
             score = getSpecificDiceValueScore(1);
             break;
@@ -221,8 +223,12 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     }
 
     private void updateCurrentCategoryScore(int score) {
-        playerScores[currentPlayerIndex][category] = score;
-        display.updateScorecard(category, currentPlayerNumber, score);
+        updateAndDisplayScore(currentPlayerIndex, currentCategory, score);
+    }
+
+    private void updateAndDisplayScore(int playerIndex, int category, int score) {
+        playerScores[playerIndex][category] = score;
+        display.updateScorecard(category, getPlayerNumber(playerIndex), score);
     }
 
     private void updateTotalScore(int score) {

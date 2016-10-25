@@ -17,7 +17,6 @@ import acm.util.RandomGenerator;
 public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private int currentCategory;
     private int currentPlayerIndex;
-    private int currentTurnNumber;
 
     private int[] diceValues;
     private YahtzeeDisplay display;
@@ -50,32 +49,20 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     }
 
     private void playGame() {
-        setFirstPlayer();
-
-        for (currentTurnNumber = 1; currentTurnNumber <= N_SCORING_CATEGORIES; currentTurnNumber++) {
+        for (int currentTurnNumber = 1; currentTurnNumber <= N_SCORING_CATEGORIES; currentTurnNumber++) {
             playTurn();
         }
 
         endGame();
     }
 
-    private void setFirstPlayer() {
-        currentPlayerIndex = 0;
-    }
-
     private void playTurn() {
-        handleFirstDiceRoll();
-        handleSubsequentDiceRoll();
-        handleSubsequentDiceRoll();
-        handleCategorySelection();
-        updateCurrentPlayerScore();
-        setNextPlayer();
-    }
-
-    private void setNextPlayer() {
-        currentPlayerIndex++;
-        if (currentPlayerIndex >= nPlayers) {
-            currentPlayerIndex = 0;
+        for (currentPlayerIndex = 0; currentPlayerIndex < nPlayers; currentPlayerIndex++) {
+            handleFirstDiceRoll();
+            handleSubsequentDiceRoll();
+            handleSubsequentDiceRoll();
+            handleCategorySelection();
+            updateCurrentPlayerScore();
         }
     }
 

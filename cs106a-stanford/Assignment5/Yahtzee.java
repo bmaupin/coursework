@@ -17,7 +17,6 @@ import acm.util.RandomGenerator;
 public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private int currentCategory;
     private int currentPlayerIndex;
-    private String currentPlayerName;
     private int currentTurnNumber;
 
     private int[] diceValues;
@@ -56,15 +55,12 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         for (currentTurnNumber = 1; currentTurnNumber <= N_SCORING_CATEGORIES; currentTurnNumber++) {
             playTurn();
         }
+
+        endGame();
     }
 
     private void setFirstPlayer() {
         currentPlayerIndex = 0;
-        setCurrentPlayer();
-    }
-
-    private void setCurrentPlayer() {
-        currentPlayerName = playerNames[currentPlayerIndex];
     }
 
     private void playTurn() {
@@ -81,18 +77,22 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         if (currentPlayerIndex >= nPlayers) {
             currentPlayerIndex = 0;
         }
-        setCurrentPlayer();
     }
 
     private void handleFirstDiceRoll() {
         display.printMessage(
-                String.format("%s's turn! Click \"Roll Dice\" button to roll the dice.", currentPlayerName));
+                String.format("%s's turn! Click \"Roll Dice\" button to roll the dice.",
+                        getPlayerName(currentPlayerIndex)));
         display.waitForPlayerToClickRoll(getPlayerNumber(currentPlayerIndex));
         diceValues = new int[N_DICE];
         for (int i = 0; i < diceValues.length; i++) {
             diceValues[i] = rgen.nextInt(1, 6);
         }
         display.displayDice(diceValues);
+    }
+
+    private String getPlayerName(int playerIndex) {
+        return playerNames[playerIndex];
     }
 
     private int getPlayerNumber(int playerIndex) {
@@ -131,7 +131,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private void updateCurrentPlayerScore() {
         int score = calculateCurrentCategoryScore();
         updateCurrentCategoryScore(score);
-        updateTotalScore(score);
+        incrementTotalScore(score);
     }
 
     private int calculateCurrentCategoryScore() {
@@ -231,8 +231,73 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         display.updateScorecard(category, getPlayerNumber(playerIndex), score);
     }
 
-    private void updateTotalScore(int score) {
-        playerScores[currentPlayerIndex][TOTAL] += score;
-        display.updateScorecard(TOTAL, currentPlayerNumber, playerScores[currentPlayerIndex][TOTAL]);
+    private void incrementTotalScore(int score) {
+        int totalScore = playerScores[currentPlayerIndex][TOTAL] + score;
+        updateAndDisplayScore(currentPlayerIndex, TOTAL, totalScore);
+    }
+
+    private void endGame() {
+        displayFinalScores();
+        determineWinner();
+    }
+
+    private void displayFinalScores() {
+        for (int playerIndex = 0; playerIndex < nPlayers; playerIndex++) {
+            updateAndDisplayScore(playerIndex, UPPER_SCORE, calculateUpperScore(playerIndex));
+            updateAndDisplayScore(playerIndex, UPPER_BONUS, calculateUpperBonus(playerIndex));
+            updateAndDisplayScore(playerIndex, LOWER_SCORE, calculateLowerScore(playerIndex));
+            updateAndDisplayScore(playerIndex, TOTAL, calculateTotalScore(playerIndex));
+        }
+    }
+
+    private int calculateUpperScore(int playerIndex) {
+        return playerScores[playerIndex][ONES] +
+                playerScores[playerIndex][TWOS] +
+                playerScores[playerIndex][THREES] +
+                playerScores[playerIndex][FOURS] +
+                playerScores[playerIndex][FIVES] +
+                playerScores[playerIndex][SIXES];
+    }
+
+    private int calculateUpperBonus(int playerIndex) {
+        if (playerScores[playerIndex][UPPER_SCORE] >= 63) {
+            return 35;
+        } else {
+            return 0;
+        }
+    }
+
+    private int calculateLowerScore(int playerIndex) {
+        return playerScores[playerIndex][THREE_OF_A_KIND] +
+                playerScores[playerIndex][FOUR_OF_A_KIND] +
+                playerScores[playerIndex][FULL_HOUSE] +
+                playerScores[playerIndex][SMALL_STRAIGHT] +
+                playerScores[playerIndex][LARGE_STRAIGHT] +
+                playerScores[playerIndex][YAHTZEE] +
+                playerScores[playerIndex][CHANCE];
+    }
+
+    private int calculateTotalScore(int playerIndex) {
+        return playerScores[playerIndex][UPPER_SCORE] +
+                playerScores[playerIndex][UPPER_BONUS] +
+                playerScores[playerIndex][LOWER_SCORE];
+    }
+
+    private void determineWinner() {
+        int highScore = -1;
+        int winnerIndex = -1;
+
+        for (int playerIndex = 0; playerIndex < nPlayers; playerIndex++) {
+            if (playerScores[playerIndex][TOTAL] > highScore) {
+                highScore = playerScores[playerIndex][TOTAL];
+                winnerIndex = playerIndex;
+            }
+        }
+
+        display.printMessage(
+                String.format(
+                        "Congratulations, %s, you're the winner with a total score of %d!",
+                        getPlayerName(winnerIndex),
+                        highScore));
     }
 }

@@ -122,89 +122,61 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     }
 
     private int calculateCurrentCategoryScore() {
-        int score = 0;
-
         if (!checkCategory(diceValues, currentCategory)) {
-            return score;
+            return 0;
         }
 
         switch (currentCategory) {
         case ONES:
-            score = getSpecificDiceValueScore(1);
-            break;
+            return getSpecificDiceValueScore(1);
 
         case TWOS:
-            score = getSpecificDiceValueScore(2);
-            break;
+            return getSpecificDiceValueScore(2);
 
         case THREES:
-            score = getSpecificDiceValueScore(3);
-            break;
+            return getSpecificDiceValueScore(3);
 
         case FOURS:
-            score = getSpecificDiceValueScore(4);
-            break;
+            return getSpecificDiceValueScore(4);
 
         case FIVES:
-            score = getSpecificDiceValueScore(5);
-            break;
+            return getSpecificDiceValueScore(5);
 
         case SIXES:
-            score = getSpecificDiceValueScore(6);
-            break;
+            return getSpecificDiceValueScore(6);
 
         case THREE_OF_A_KIND:
-            score = getTotalDiceValueScore();
-            break;
-
         case FOUR_OF_A_KIND:
-            score = getTotalDiceValueScore();
-            break;
+        case CHANCE:
+            return getTotalDiceValueScore();
 
         case FULL_HOUSE:
-            score = 25;
-            break;
+            return 25;
 
         case SMALL_STRAIGHT:
-            score = 30;
-            break;
+            return 30;
 
         case LARGE_STRAIGHT:
-            score = 40;
-            break;
+            return 40;
 
         case YAHTZEE:
-            score = 50;
-            break;
-
-        case CHANCE:
-            score = getTotalDiceValueScore();
-            break;
+            return 50;
 
         default:
         }
 
-        return score;
+        return 0;
     }
 
     private boolean checkCategory(int[] diceValues, int category) {
         switch (category) {
         case ONES:
-            return true;
-
         case TWOS:
-            return true;
-
         case THREES:
-            return true;
-
         case FOURS:
-            return true;
-
         case FIVES:
-            return true;
-
         case SIXES:
+        case CHANCE:
             return true;
 
         case THREE_OF_A_KIND:
@@ -230,9 +202,6 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         case YAHTZEE:
             // TODO
             break;
-
-        case CHANCE:
-            return true;
 
         default:
         }

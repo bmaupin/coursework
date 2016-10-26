@@ -124,8 +124,7 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private int calculateCurrentCategoryScore() {
         int score = 0;
 
-        // TODO: implement YahtzeeMagicStub.checkCategory
-        if (!YahtzeeMagicStub.checkCategory(diceValues, currentCategory)) {
+        if (!checkCategory(diceValues, currentCategory)) {
             return score;
         }
 
@@ -186,6 +185,59 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         }
 
         return score;
+    }
+
+    private boolean checkCategory(int[] diceValues, int category) {
+        switch (category) {
+        case ONES:
+            return true;
+
+        case TWOS:
+            return true;
+
+        case THREES:
+            return true;
+
+        case FOURS:
+            return true;
+
+        case FIVES:
+            return true;
+
+        case SIXES:
+            return true;
+
+        case THREE_OF_A_KIND:
+            // TODO
+            break;
+
+        case FOUR_OF_A_KIND:
+            // TODO
+            break;
+
+        case FULL_HOUSE:
+            // TODO
+            break;
+
+        case SMALL_STRAIGHT:
+            // TODO
+            break;
+
+        case LARGE_STRAIGHT:
+            // TODO
+            break;
+
+        case YAHTZEE:
+            // TODO
+            break;
+
+        case CHANCE:
+            return true;
+
+        default:
+        }
+
+        return false;
     }
 
     private int getSpecificDiceValueScore(int value) {

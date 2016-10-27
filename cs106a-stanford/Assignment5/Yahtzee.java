@@ -186,30 +186,42 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
                     getSameDiceValueCounts().contains(5)) {
                 return true;
             }
+            break;
 
         case FOUR_OF_A_KIND:
             if (getSameDiceValueCounts().contains(4) ||
                     getSameDiceValueCounts().contains(5)) {
                 return true;
             }
+            break;
 
         case YAHTZEE:
             if (getSameDiceValueCounts().contains(5)) {
                 return true;
             }
+            break;
 
         case FULL_HOUSE:
             if (getSameDiceValueCounts().contains(3) &&
                     getSameDiceValueCounts().contains(2)) {
                 return true;
             }
+            break;
 
         case SMALL_STRAIGHT:
             // TODO
+            System.out.println(getLongestDiceStraight());
+            if (getLongestDiceStraight() >= 4) {
+                return true;
+            }
             break;
 
         case LARGE_STRAIGHT:
             // TODO
+            System.out.println(getLongestDiceStraight());
+            if (getLongestDiceStraight() >= 5) {
+                return true;
+            }
             break;
 
         default:
@@ -226,6 +238,32 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
         }
 
         return new ArrayList<Integer>(diceValueCounts.values());
+    }
+
+    private int getLongestDiceStraight() {
+        // int[] diceValuesCopy = Arrays.copyOf(diceValues, diceValues.length);
+        // Arrays.sort(diceValuesCopy);
+        int[] uniqueDiceValues = Arrays.stream(diceValues).distinct().toArray();
+        Arrays.sort(uniqueDiceValues);
+        // IntStream is = Arrays.stream(diceValues).distinct();
+        // int[] uniqueDiceValues = is.toArray();
+        // TODO
+        System.out.println(Arrays.toString(uniqueDiceValues));
+        int longestDiceStraight = 0;
+        int straightCount = 1;
+
+        for (int i = 1; i < uniqueDiceValues.length; i++) {
+            if (uniqueDiceValues[i] - uniqueDiceValues[i - 1] == 1) {
+                straightCount++;
+                if (straightCount > longestDiceStraight) {
+                    longestDiceStraight = straightCount;
+                }
+            } else {
+                straightCount = 1;
+            }
+        }
+
+        return longestDiceStraight;
     }
 
     private int getSpecificDiceValueScore(int value) {

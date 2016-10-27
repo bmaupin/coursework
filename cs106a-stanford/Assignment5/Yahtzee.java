@@ -8,6 +8,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import acm.io.IODialog;
@@ -180,16 +181,28 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
             return true;
 
         case THREE_OF_A_KIND:
-            // TODO
-            break;
+            if (getSameDiceValueCounts().contains(3) ||
+                    getSameDiceValueCounts().contains(4) ||
+                    getSameDiceValueCounts().contains(5)) {
+                return true;
+            }
 
         case FOUR_OF_A_KIND:
-            // TODO
-            break;
+            if (getSameDiceValueCounts().contains(4) ||
+                    getSameDiceValueCounts().contains(5)) {
+                return true;
+            }
+
+        case YAHTZEE:
+            if (getSameDiceValueCounts().contains(5)) {
+                return true;
+            }
 
         case FULL_HOUSE:
-            // TODO
-            break;
+            if (getSameDiceValueCounts().contains(3) &&
+                    getSameDiceValueCounts().contains(2)) {
+                return true;
+            }
 
         case SMALL_STRAIGHT:
             // TODO
@@ -199,14 +212,20 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
             // TODO
             break;
 
-        case YAHTZEE:
-            // TODO
-            break;
-
         default:
         }
 
         return false;
+    }
+
+    private List<Integer> getSameDiceValueCounts() {
+        Map<Integer, Integer> diceValueCounts = new HashMap<Integer, Integer>();
+        for (int diceValue : diceValues) {
+            int diceValueCount = diceValueCounts.getOrDefault(diceValue, 0) + 1;
+            diceValueCounts.put(diceValue, diceValueCount);
+        }
+
+        return new ArrayList<Integer>(diceValueCounts.values());
     }
 
     private int getSpecificDiceValueScore(int value) {
@@ -218,16 +237,6 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     private int getTotalDiceValueScore() {
         return Arrays.stream(diceValues)
                 .sum();
-    }
-
-    private Map<Integer, Integer> getDiceValueCounts() {
-        Map<Integer, Integer> diceValueCounts = new HashMap<Integer, Integer>();
-        for (int diceValue : diceValues) {
-            int diceValueCount = diceValueCounts.getOrDefault(diceValue, 0) + 1;
-            diceValueCounts.put(diceValue, diceValueCount);
-        }
-
-        return diceValueCounts;
     }
 
     private void updateCurrentCategoryScore(int score) {

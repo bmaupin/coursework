@@ -209,16 +209,12 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
             break;
 
         case SMALL_STRAIGHT:
-            // TODO
-            System.out.println(getLongestDiceStraight());
             if (getLongestDiceStraight() >= 4) {
                 return true;
             }
             break;
 
         case LARGE_STRAIGHT:
-            // TODO
-            System.out.println(getLongestDiceStraight());
             if (getLongestDiceStraight() >= 5) {
                 return true;
             }
@@ -241,16 +237,12 @@ public class Yahtzee extends GraphicsProgram implements YahtzeeConstants {
     }
 
     private int getLongestDiceStraight() {
-        // int[] diceValuesCopy = Arrays.copyOf(diceValues, diceValues.length);
-        // Arrays.sort(diceValuesCopy);
-        int[] uniqueDiceValues = Arrays.stream(diceValues).distinct().toArray();
-        Arrays.sort(uniqueDiceValues);
-        // IntStream is = Arrays.stream(diceValues).distinct();
-        // int[] uniqueDiceValues = is.toArray();
-        // TODO
-        System.out.println(Arrays.toString(uniqueDiceValues));
         int longestDiceStraight = 0;
         int straightCount = 1;
+        int[] uniqueDiceValues = Arrays.stream(diceValues)
+                .distinct()
+                .sorted()
+                .toArray();
 
         for (int i = 1; i < uniqueDiceValues.length; i++) {
             if (uniqueDiceValues[i] - uniqueDiceValues[i - 1] == 1) {

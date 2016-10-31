@@ -1,3 +1,4 @@
+
 /*
  * File: NameSurfer.java
  * ---------------------
@@ -5,28 +6,63 @@
  * the baby-name database described in the assignment handout.
  */
 
-import acm.program.*;
-import java.awt.event.*;
-import javax.swing.*;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
-public class NameSurfer extends Program implements NameSurferConstants {
+public class NameSurfer extends Application implements NameSurferConstants {
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-/* Method: init() */
-/**
- * This method has the responsibility for reading in the data base
- * and initializing the interactors at the bottom of the window.
- */
-	public void init() {
-	    // You fill this in, along with any helper methods //
-	}
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        BorderPane borderPane = new BorderPane();
+        HBox bottomPane = createBottomPane();
+        borderPane.setBottom(bottomPane);
 
-/* Method: actionPerformed(e) */
-/**
- * This class is responsible for detecting when the buttons are
- * clicked, so you will have to define a method to respond to
- * button actions.
- */
-	public void actionPerformed(ActionEvent e) {
-		// You fill this in //
-	}
+        Scene scene = new Scene(borderPane);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private HBox createBottomPane() {
+        HBox hbox = new HBox();
+        hbox.setPadding(new Insets(15, 12, 15, 12));
+        hbox.setSpacing(10);
+
+        Text nameLabel = new Text("Name");
+
+        TextField nameInput = new TextField();
+
+        Button buttonGraph = new Button("Graph");
+        buttonGraph.setPrefSize(100, 20);
+        buttonGraph.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Graph: " + nameInput.getText());
+            }
+        });
+
+        Button buttonClear = new Button("Clear");
+        buttonClear.setPrefSize(100, 20);
+        buttonClear.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                nameInput.clear();
+            }
+        });
+
+        hbox.getChildren().addAll(nameLabel, nameInput, buttonGraph, buttonClear);
+
+        return hbox;
+    }
 }

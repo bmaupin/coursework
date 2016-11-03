@@ -19,12 +19,23 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class NameSurfer extends Application implements NameSurferConstants {
+    NameSurferDataBase database;
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        setUpDatabase();
+        setUpUi(primaryStage);
+    }
+
+    private void setUpDatabase() {
+        database = new NameSurferDataBase(NAMES_DATA_FILE);
+    }
+
+    private void setUpUi(Stage primaryStage) {
         BorderPane borderPane = new BorderPane();
         HBox bottomPane = createBottomPane();
         borderPane.setBottom(bottomPane);
@@ -48,7 +59,7 @@ public class NameSurfer extends Application implements NameSurferConstants {
         buttonGraph.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Graph: " + nameInput.getText());
+                System.out.println("Graph: " + database.findEntry(nameInput.getText()));
             }
         });
 

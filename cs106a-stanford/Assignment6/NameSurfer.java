@@ -10,6 +10,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -37,6 +38,8 @@ public class NameSurfer extends Application implements NameSurferConstants {
 
     private void setUpUi(Stage primaryStage) {
         BorderPane borderPane = new BorderPane();
+        borderPane.setPrefSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
+
         HBox bottomPane = createBottomPane();
         borderPane.setBottom(bottomPane);
 
@@ -73,6 +76,9 @@ public class NameSurfer extends Application implements NameSurferConstants {
         });
 
         hbox.getChildren().addAll(nameLabel, nameInput, buttonGraph, buttonClear);
+
+        // Center the bottom pane contents within the pane
+        hbox.setAlignment(Pos.CENTER);
 
         return hbox;
     }

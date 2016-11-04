@@ -7,22 +7,27 @@
  * (redrawing) the graphs whenever the list of entries changes or the window is resized.
  */
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
 public class NameSurferGraph extends Pane implements NameSurferConstants {
+    private static final int LABEL_PADDING = 2;
+
     public NameSurferGraph() {
         super();
 
         setWhiteBackground();
-        drawDecadeLines();
+        drawVerticalGridLines();
+        drawHorizontalGridLines();
+        drawDecadeLabels();
     }
 
     private void setWhiteBackground() {
         this.setStyle("-fx-background-color: white");
     }
 
-    private void drawDecadeLines() {
+    private void drawVerticalGridLines() {
         for (int i = 0; i < NDECADES; i++) {
             drawVerticalLine(i);
         }
@@ -30,12 +35,52 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
 
     private void drawVerticalLine(int decadeIndex) {
         Line line = new Line();
-        line.setStartY(0);
-        line.endYProperty().bind(heightProperty());
         line.startXProperty().bind(widthProperty().divide(NDECADES).multiply(decadeIndex));
         line.endXProperty().bind(line.startXProperty());
+        line.setStartY(0);
+        line.endYProperty().bind(heightProperty());
 
         this.getChildren().add(line);
+    }
+
+    private void drawHorizontalGridLines() {
+        drawTopLine();
+        drawBottomLine();
+    }
+
+    private void drawTopLine() {
+        Line line = new Line();
+        line.setStartX(0);
+        line.endXProperty().bind(widthProperty());
+        line.setStartY(GRAPH_MARGIN_SIZE);
+        line.setEndY(GRAPH_MARGIN_SIZE);
+
+        this.getChildren().add(line);
+    }
+
+    private void drawBottomLine() {
+        Line line = new Line();
+        line.setStartX(0);
+        line.endXProperty().bind(widthProperty());
+        line.startYProperty().bind(heightProperty().subtract(GRAPH_MARGIN_SIZE));
+        line.endYProperty().bind(line.startYProperty());
+
+        this.getChildren().add(line);
+    }
+
+    private void drawDecadeLabels() {
+        for (int i = 0; i < NDECADES; i++) {
+            drawDecadeLabel(i);
+        }
+    }
+
+    private void drawDecadeLabel(int decadeIndex) {
+        Label label = new Label(Integer.toString(START_DECADE + decadeIndex * 10));
+        // TODO: can we remove duplication here?
+        label.layoutXProperty().bind(widthProperty().divide(NDECADES).multiply(decadeIndex).add(LABEL_PADDING));
+        label.layoutYProperty().bind(heightProperty().subtract(GRAPH_MARGIN_SIZE).add(LABEL_PADDING));
+
+        this.getChildren().add(label);
     }
 }
 

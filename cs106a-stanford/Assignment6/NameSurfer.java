@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -36,9 +37,13 @@ public class NameSurfer extends Application implements NameSurferConstants {
         database = new NameSurferDataBase(NAMES_DATA_FILE);
     }
 
+    // TODO: refactor
     private void setUpUi(Stage primaryStage) {
         BorderPane borderPane = new BorderPane();
         borderPane.setPrefSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
+
+        Pane graphPane = new NameSurferGraph();
+        borderPane.setCenter(graphPane);
 
         HBox bottomPane = createBottomPane();
         borderPane.setBottom(bottomPane);
@@ -48,6 +53,7 @@ public class NameSurfer extends Application implements NameSurferConstants {
         primaryStage.show();
     }
 
+    // TODO: refactor
     private HBox createBottomPane() {
         HBox hbox = new HBox();
         hbox.setPadding(new Insets(15, 12, 15, 12));

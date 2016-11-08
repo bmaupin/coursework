@@ -7,6 +7,7 @@
  * (redrawing) the graphs whenever the list of entries changes or the window is resized.
  */
 
+import javafx.beans.binding.DoubleBinding;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
@@ -35,7 +36,7 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
 
     private void drawVerticalLine(int decadeIndex) {
         Line line = new Line();
-        line.startXProperty().bind(widthProperty().divide(NDECADES).multiply(decadeIndex));
+        line.startXProperty().bind(getDecadeStartX(decadeIndex));
         line.endXProperty().bind(line.startXProperty());
         line.setStartY(0);
         line.endYProperty().bind(heightProperty());
@@ -62,7 +63,7 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
         Line line = new Line();
         line.setStartX(0);
         line.endXProperty().bind(widthProperty());
-        line.startYProperty().bind(heightProperty().subtract(GRAPH_MARGIN_SIZE));
+        line.startYProperty().bind(getBottomMarginY());
         line.endYProperty().bind(line.startYProperty());
 
         this.getChildren().add(line);
@@ -76,9 +77,8 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
 
     private void drawDecadeLabel(int decadeIndex) {
         Label label = new Label(Integer.toString(START_DECADE + decadeIndex * 10));
-        // TODO: can we remove duplication here?
-        label.layoutXProperty().bind(widthProperty().divide(NDECADES).multiply(decadeIndex).add(LABEL_PADDING));
-        label.layoutYProperty().bind(heightProperty().subtract(GRAPH_MARGIN_SIZE).add(LABEL_PADDING));
+        label.layoutXProperty().bind(getDecadeStartX(decadeIndex).add(LABEL_PADDING));
+        label.layoutYProperty().bind(getBottomMarginY().add(LABEL_PADDING));
 
         this.getChildren().add(label);
     }
@@ -99,21 +99,27 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
             endRank = MAX_RANK;
         }
 
-        // TODO: remove duplication
-        line.startXProperty().bind(widthProperty().divide(NDECADES)
-                .multiply(decadeIndex));
-        line.endXProperty().bind(widthProperty().divide(NDECADES)
-                .multiply(decadeIndex + 1));
-        line.startYProperty().bind(heightProperty().subtract(GRAPH_MARGIN_SIZE * 2)
-                .divide(MAX_RANK)
-                .multiply(startRank)
-                .add(GRAPH_MARGIN_SIZE));
-        line.endYProperty().bind(heightProperty().subtract(GRAPH_MARGIN_SIZE * 2)
-                .divide(MAX_RANK)
-                .multiply(endRank)
-                .add(GRAPH_MARGIN_SIZE));
+        line.startXProperty().bind(getDecadeStartX(decadeIndex));
+        line.endXProperty().bind(getDecadeStartX(decadeIndex + 1));
+        line.startYProperty().bind(getRankY(startRank));
+        line.endYProperty().bind(getRankY(endRank));
 
         this.getChildren().add(line);
+    }
+
+    private DoubleBinding getDecadeStartX(int decadeIndex) {
+        return widthProperty().divide(NDECADES).multiply(decadeIndex);
+    }
+
+    private DoubleBinding getBottomMarginY() {
+        return heightProperty().subtract(GRAPH_MARGIN_SIZE);
+    }
+
+    private DoubleBinding getRankY(int rank) {
+        return heightProperty().subtract(GRAPH_MARGIN_SIZE * 2)
+                .divide(MAX_RANK)
+                .multiply(rank)
+                .add(GRAPH_MARGIN_SIZE);
     }
 }
 

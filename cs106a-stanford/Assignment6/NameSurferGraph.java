@@ -82,6 +82,39 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
 
         this.getChildren().add(label);
     }
+
+    public void addEntry(NameSurferEntry entry) {
+        for (int i = 0; i < NDECADES - 1; i++) {
+            drawDecadeGraphLine(i, entry.getRank(i), entry.getRank(i + 1));
+        }
+    }
+
+    private void drawDecadeGraphLine(int decadeIndex, int startRank, int endRank) {
+        Line line = new Line();
+
+        if (startRank == 0) {
+            startRank = MAX_RANK;
+        }
+        if (endRank == 0) {
+            endRank = MAX_RANK;
+        }
+
+        // TODO: remove duplication
+        line.startXProperty().bind(widthProperty().divide(NDECADES)
+                .multiply(decadeIndex));
+        line.endXProperty().bind(widthProperty().divide(NDECADES)
+                .multiply(decadeIndex + 1));
+        line.startYProperty().bind(heightProperty().subtract(GRAPH_MARGIN_SIZE * 2)
+                .divide(MAX_RANK)
+                .multiply(startRank)
+                .add(GRAPH_MARGIN_SIZE));
+        line.endYProperty().bind(heightProperty().subtract(GRAPH_MARGIN_SIZE * 2)
+                .divide(MAX_RANK)
+                .multiply(endRank)
+                .add(GRAPH_MARGIN_SIZE));
+
+        this.getChildren().add(line);
+    }
 }
 
 // public class NameSurferGraph extends GCanvas

@@ -16,12 +16,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class NameSurfer extends Application implements NameSurferConstants {
     NameSurferDataBase database;
+    NameSurferGraph graphPane;
 
     public static void main(String[] args) {
         launch(args);
@@ -42,7 +42,7 @@ public class NameSurfer extends Application implements NameSurferConstants {
         BorderPane borderPane = new BorderPane();
         borderPane.setPrefSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
 
-        Pane graphPane = new NameSurferGraph();
+        graphPane = new NameSurferGraph();
         borderPane.setCenter(graphPane);
 
         HBox bottomPane = createBottomPane();
@@ -68,7 +68,7 @@ public class NameSurfer extends Application implements NameSurferConstants {
         buttonGraph.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Graph: " + database.findEntry(nameInput.getText()));
+                graphPane.addEntry(database.findEntry(nameInput.getText()));
             }
         });
 

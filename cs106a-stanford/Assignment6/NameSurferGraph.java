@@ -156,8 +156,10 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
 
     private void drawDecadeGraphLabel(int decadeIndex, int rank, String name, Color color) {
         Text label = new Text(String.format("%s %s", name, convertRankForDisplay(rank)));
+
         label.layoutXProperty().bind(getDecadeStartX(decadeIndex).add(LABEL_PADDING));
         label.layoutYProperty().bind(getRankY(rank).subtract(LABEL_PADDING));
+        label.setStroke(color);
 
         this.getChildren().add(label);
     }

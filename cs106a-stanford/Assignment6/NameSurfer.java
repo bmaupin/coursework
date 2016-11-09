@@ -72,6 +72,7 @@ public class NameSurfer extends Application implements NameSurferConstants {
             }
         });
 
+        // TODO: clear graph
         Button buttonClear = new Button("Clear");
         buttonClear.setPrefSize(100, 20);
         buttonClear.setOnAction(new EventHandler<ActionEvent>() {

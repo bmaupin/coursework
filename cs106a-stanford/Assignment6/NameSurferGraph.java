@@ -112,28 +112,8 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
     public void addEntry(NameSurferEntry entry) {
         Color color = getNextColor();
 
-        for (int i = 0; i < NDECADES - 1; i++) {
-            drawDecadeGraphLine(i, entry.getRank(i), entry.getRank(i + 1), color);
-        }
-    }
-
-    private void drawDecadeGraphLine(int decadeIndex, int startRank, int endRank, Color color) {
-        Line line = new Line();
-
-        if (startRank == 0) {
-            startRank = MAX_RANK;
-        }
-        if (endRank == 0) {
-            endRank = MAX_RANK;
-        }
-
-        line.startXProperty().bind(getDecadeStartX(decadeIndex));
-        line.endXProperty().bind(getDecadeStartX(decadeIndex + 1));
-        line.startYProperty().bind(getRankY(startRank));
-        line.endYProperty().bind(getRankY(endRank));
-        line.setStroke(color);
-
-        this.getChildren().add(line);
+        drawDecadeGraphLines(entry, color);
+        drawDecadeGraphLabels(entry, color);
     }
 
     private Color getNextColor() {
@@ -148,6 +128,52 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
         }
 
         return nextColor;
+    }
+
+    private void drawDecadeGraphLines(NameSurferEntry entry, Color color) {
+        for (int i = 0; i < NDECADES - 1; i++) {
+            drawDecadeGraphLine(i, entry.getRank(i), entry.getRank(i + 1), color);
+        }
+    }
+
+    private void drawDecadeGraphLine(int decadeIndex, int startRank, int endRank, Color color) {
+        Line line = new Line();
+
+        line.startXProperty().bind(getDecadeStartX(decadeIndex));
+        line.endXProperty().bind(getDecadeStartX(decadeIndex + 1));
+        line.startYProperty().bind(getRankY(convertZeroRank(startRank)));
+        line.endYProperty().bind(getRankY(convertZeroRank(endRank)));
+        line.setStroke(color);
+
+        this.getChildren().add(line);
+    }
+
+    private int convertZeroRank(int rank) {
+        if (rank == 0) {
+            return MAX_RANK;
+        } else {
+            return rank;
+        }
+    }
+
+    private void drawDecadeGraphLabels(NameSurferEntry entry, Color color) {
+        for (int i = 0; i < NDECADES; i++) {
+            drawDecadeGraphLabel(i, entry.getRank(i), entry.getName(), color);
+        }
+    }
+
+    private void drawDecadeGraphLabel(int decadeIndex, int rank, String name, Color color) {
+        String displayRank = String.valueOf(rank);
+
+        if (displayRank.equals("0")) {
+            displayRank = "*";
+        }
+
+        Label label = new Label(String.format("%s %s", name, displayRank));
+        label.layoutXProperty().bind(getDecadeStartX(decadeIndex).add(LABEL_PADDING));
+        label.layoutYProperty().bind(getRankY(convertZeroRank(rank)).add(LABEL_PADDING));
+
+        this.getChildren().add(label);
     }
 
     private DoubleBinding getDecadeStartX(int decadeIndex) {

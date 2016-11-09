@@ -10,10 +10,36 @@
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 public class NameSurferGraph extends Pane implements NameSurferConstants {
     private static final int LABEL_PADDING = 2;
+    private int graphColorIndex = 0;
+    // Colors from
+    // https://material.google.com/style/color.html#color-color-palette
+    private int[][] graphColors = new int[][] {
+            { 63, 81, 181 },
+            { 0, 150, 136 },
+            { 255, 235, 59 },
+            { 233, 30, 99 },
+            { 33, 150, 243 },
+            { 76, 175, 80 },
+            { 255, 193, 7 },
+            { 244, 67, 54 },
+            { 121, 85, 72 },
+            { 3, 169, 244 },
+            { 139, 195, 74 },
+            { 255, 152, 0 },
+            { 103, 58, 183 },
+            { 0, 188, 212 },
+            { 205, 220, 57 },
+            { 255, 87, 34 },
+            { 156, 39, 176 },
+            { 158, 158, 158 },
+            { 96, 125, 139 },
+            { 0, 0, 0 }
+    };
 
     public NameSurferGraph() {
         super();
@@ -84,12 +110,14 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
     }
 
     public void addEntry(NameSurferEntry entry) {
+        Color color = getNextColor();
+
         for (int i = 0; i < NDECADES - 1; i++) {
-            drawDecadeGraphLine(i, entry.getRank(i), entry.getRank(i + 1));
+            drawDecadeGraphLine(i, entry.getRank(i), entry.getRank(i + 1), color);
         }
     }
 
-    private void drawDecadeGraphLine(int decadeIndex, int startRank, int endRank) {
+    private void drawDecadeGraphLine(int decadeIndex, int startRank, int endRank, Color color) {
         Line line = new Line();
 
         if (startRank == 0) {
@@ -103,8 +131,23 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
         line.endXProperty().bind(getDecadeStartX(decadeIndex + 1));
         line.startYProperty().bind(getRankY(startRank));
         line.endYProperty().bind(getRankY(endRank));
+        line.setStroke(color);
 
         this.getChildren().add(line);
+    }
+
+    private Color getNextColor() {
+        Color nextColor = Color.rgb(
+                graphColors[graphColorIndex][0],
+                graphColors[graphColorIndex][1],
+                graphColors[graphColorIndex][2]);
+
+        graphColorIndex++;
+        if (graphColorIndex >= graphColors.length) {
+            graphColorIndex = 0;
+        }
+
+        return nextColor;
     }
 
     private DoubleBinding getDecadeStartX(int decadeIndex) {

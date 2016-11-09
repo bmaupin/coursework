@@ -8,13 +8,13 @@
  */
 
 import javafx.beans.binding.DoubleBinding;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 
 public class NameSurferGraph extends Pane implements NameSurferConstants {
-    private static final int LABEL_PADDING = 2;
+    private static final int LABEL_PADDING = 3;
     private int graphColorIndex = 0;
     // Colors from
     // https://material.google.com/style/color.html#color-color-palette
@@ -102,9 +102,9 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
     }
 
     private void drawDecadeLabel(int decadeIndex) {
-        Label label = new Label(Integer.toString(START_DECADE + decadeIndex * 10));
+        Text label = new Text(Integer.toString(START_DECADE + decadeIndex * 10));
         label.layoutXProperty().bind(getDecadeStartX(decadeIndex).add(LABEL_PADDING));
-        label.layoutYProperty().bind(getBottomMarginY().add(LABEL_PADDING));
+        label.layoutYProperty().bind(heightProperty().subtract(LABEL_PADDING));
 
         this.getChildren().add(label);
     }
@@ -155,9 +155,9 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
     }
 
     private void drawDecadeGraphLabel(int decadeIndex, int rank, String name, Color color) {
-        Label label = new Label(String.format("%s %s", name, convertRankForDisplay(rank)));
+        Text label = new Text(String.format("%s %s", name, convertRankForDisplay(rank)));
         label.layoutXProperty().bind(getDecadeStartX(decadeIndex).add(LABEL_PADDING));
-        label.layoutYProperty().bind(getRankY(rank).add(LABEL_PADDING));
+        label.layoutYProperty().bind(getRankY(rank).subtract(LABEL_PADDING));
 
         this.getChildren().add(label);
     }

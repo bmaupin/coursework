@@ -141,19 +141,11 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
 
         line.startXProperty().bind(getDecadeStartX(decadeIndex));
         line.endXProperty().bind(getDecadeStartX(decadeIndex + 1));
-        line.startYProperty().bind(getRankY(convertZeroRank(startRank)));
-        line.endYProperty().bind(getRankY(convertZeroRank(endRank)));
+        line.startYProperty().bind(getRankY(startRank));
+        line.endYProperty().bind(getRankY(endRank));
         line.setStroke(color);
 
         this.getChildren().add(line);
-    }
-
-    private int convertZeroRank(int rank) {
-        if (rank == 0) {
-            return MAX_RANK;
-        } else {
-            return rank;
-        }
     }
 
     private void drawDecadeGraphLabels(NameSurferEntry entry, Color color) {
@@ -163,17 +155,19 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
     }
 
     private void drawDecadeGraphLabel(int decadeIndex, int rank, String name, Color color) {
-        String displayRank = String.valueOf(rank);
-
-        if (displayRank.equals("0")) {
-            displayRank = "*";
-        }
-
-        Label label = new Label(String.format("%s %s", name, displayRank));
+        Label label = new Label(String.format("%s %s", name, convertRankForDisplay(rank)));
         label.layoutXProperty().bind(getDecadeStartX(decadeIndex).add(LABEL_PADDING));
-        label.layoutYProperty().bind(getRankY(convertZeroRank(rank)).add(LABEL_PADDING));
+        label.layoutYProperty().bind(getRankY(rank).add(LABEL_PADDING));
 
         this.getChildren().add(label);
+    }
+
+    private String convertRankForDisplay(int rank) {
+        if (rank == 0) {
+            return "*";
+        } else {
+            return String.valueOf(rank);
+        }
     }
 
     private DoubleBinding getDecadeStartX(int decadeIndex) {
@@ -187,8 +181,16 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
     private DoubleBinding getRankY(int rank) {
         return heightProperty().subtract(GRAPH_MARGIN_SIZE * 2)
                 .divide(MAX_RANK)
-                .multiply(rank)
+                .multiply(convertRankForY(rank))
                 .add(GRAPH_MARGIN_SIZE);
+    }
+
+    private int convertRankForY(int rank) {
+        if (rank == 0) {
+            return MAX_RANK;
+        } else {
+            return rank;
+        }
     }
 }
 

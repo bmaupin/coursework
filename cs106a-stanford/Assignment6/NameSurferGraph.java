@@ -44,10 +44,19 @@ public class NameSurferGraph extends Pane implements NameSurferConstants {
     public NameSurferGraph() {
         super();
 
+        setUpGraph();
+    }
+
+    private void setUpGraph() {
         setWhiteBackground();
         drawVerticalGridLines();
         drawHorizontalGridLines();
         drawDecadeLabels();
+    }
+
+    public void clear() {
+        this.getChildren().clear();
+        setUpGraph();
     }
 
     private void setWhiteBackground() {

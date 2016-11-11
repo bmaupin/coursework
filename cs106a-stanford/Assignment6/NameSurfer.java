@@ -37,28 +37,37 @@ public class NameSurfer extends Application implements NameSurferConstants {
         database = new NameSurferDataBase(NAMES_DATA_FILE);
     }
 
-    // TODO: refactor
     private void setUpUi(Stage primaryStage) {
-        BorderPane borderPane = new BorderPane();
-        borderPane.setPrefSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
+        BorderPane mainPane = new BorderPane();
+        mainPane.setPrefSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
 
         graphPane = new NameSurferGraph();
-        borderPane.setCenter(graphPane);
+        mainPane.setCenter(graphPane);
 
         HBox bottomPane = createBottomPane();
-        borderPane.setBottom(bottomPane);
+        mainPane.setBottom(bottomPane);
 
-        Scene scene = new Scene(borderPane);
+        Scene scene = new Scene(mainPane);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    // TODO: refactor
     private HBox createBottomPane() {
-        HBox hbox = new HBox();
-        hbox.setPadding(new Insets(15, 12, 15, 12));
-        hbox.setSpacing(10);
+        HBox bottomPane = new HBox();
+        bottomPane.setPadding(new Insets(15, 12, 15, 12));
+        bottomPane.setSpacing(10);
+        centerContents(bottomPane);
 
+        addComponentsToBottomPane(bottomPane);
+
+        return bottomPane;
+    }
+
+    private void centerContents(HBox hbox) {
+        hbox.setAlignment(Pos.CENTER);
+    }
+
+    private void addComponentsToBottomPane(HBox bottomPane) {
         Text nameLabel = new Text("Name");
 
         TextField nameInput = new TextField();
@@ -83,11 +92,6 @@ public class NameSurfer extends Application implements NameSurferConstants {
             }
         });
 
-        hbox.getChildren().addAll(nameLabel, nameInput, buttonGraph, buttonClear);
-
-        // Center the bottom pane contents within the pane
-        hbox.setAlignment(Pos.CENTER);
-
-        return hbox;
+        bottomPane.getChildren().addAll(nameLabel, nameInput, buttonGraph, buttonClear);
     }
 }

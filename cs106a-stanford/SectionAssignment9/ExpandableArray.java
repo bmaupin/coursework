@@ -3,16 +3,24 @@
  * any positive index value supplied by the caller.
  */
 public class ExpandableArray {
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
+    private Object[] backingArray;
 
+    public static void main(String[] args) {
+        ExpandableArray myList = new ExpandableArray();
+        myList.set(14, "Bob");
+        myList.set(21, "Sally");
+
+        System.out.println(myList.get(14));
+        System.out.println(myList.get(21));
+        System.out.println(myList.get(10));
+        System.out.println(myList.get(100));
     }
 
     /**
      * Creates a new expandable array with no elements.
      */
     public ExpandableArray() {
-        // . . . You fill in the implementation . . .
+        backingArray = new Object[0];
     }
 
     /**
@@ -21,7 +29,14 @@ public class ExpandableArray {
      * implementation expands the array to make room.
      */
     public void set(int index, Object value) {
-        // . . . You fill in the implementation . . .
+        if (index >= backingArray.length) {
+            Object[] newBackingArray = new Object[index + 1];
+            System.arraycopy(backingArray, 0, newBackingArray, 0, backingArray.length);
+
+            backingArray = newBackingArray;
+        }
+
+        backingArray[index] = value;
     }
 
     /**
@@ -31,6 +46,10 @@ public class ExpandableArray {
      * value is simply null.
      */
     public Object get(int index) {
-        // . . . You fill in the implementation . . .
+        if (index >= backingArray.length) {
+            return null;
+        } else {
+            return backingArray[index];
+        }
     }
 }

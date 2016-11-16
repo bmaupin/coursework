@@ -19,6 +19,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+// This isn't really a canvas but we'll keep the class name to stay as close to the assignment as possible
 public class HangmanCanvas {
     /* Constants for the simple version of the picture (in pixels) */
     private static final int SCAFFOLD_HEIGHT = 360;

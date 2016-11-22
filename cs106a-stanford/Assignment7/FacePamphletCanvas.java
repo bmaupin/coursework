@@ -17,6 +17,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -27,16 +29,19 @@ public class FacePamphletCanvas implements FacePamphletConstants {
      * display
      */
     public FacePamphletCanvas(Stage primaryStage) {
-        BorderPane mainPane = new BorderPane();
-        mainPane.setPrefSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
+        BorderPane parentPane = new BorderPane();
+        parentPane.setPrefSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
 
         HBox topPane = createTopPane();
-        mainPane.setTop(topPane);
+        parentPane.setTop(topPane);
 
-        Pane centerPane = createCenterPane();
-        mainPane.setCenter(centerPane);
+        VBox leftPane = createLeftPane();
+        parentPane.setLeft(leftPane);
 
-        Scene scene = new Scene(mainPane);
+        Pane mainPane = createCenterPane();
+        parentPane.setCenter(mainPane);
+
+        Scene scene = new Scene(parentPane);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -45,15 +50,11 @@ public class FacePamphletCanvas implements FacePamphletConstants {
         HBox topPane = new HBox();
         topPane.setPadding(new Insets(15, 12, 15, 12));
         topPane.setSpacing(10);
-        centerContents(topPane);
+        topPane.setAlignment(Pos.CENTER);
 
         addComponentsToBottomPane(topPane);
 
         return topPane;
-    }
-
-    private void centerContents(HBox hbox) {
-        hbox.setAlignment(Pos.CENTER);
     }
 
     private void addComponentsToBottomPane(HBox bottomPane) {
@@ -89,6 +90,56 @@ public class FacePamphletCanvas implements FacePamphletConstants {
         });
 
         bottomPane.getChildren().addAll(nameLabel, nameInput, buttonAdd, buttonDelete, buttonLookup);
+    }
+
+    private VBox createLeftPane() {
+        VBox leftPane = new VBox();
+        leftPane.setPadding(new Insets(15, 12, 15, 12));
+        leftPane.setSpacing(10);
+        leftPane.setPrefHeight(APPLICATION_HEIGHT);
+        leftPane.setAlignment(Pos.CENTER);
+
+        TextField inputChangeStatus = new TextField();
+
+        Button buttonChangeStatus = new Button("Change Status");
+        setHeightWidthToFit(buttonChangeStatus);
+        buttonChangeStatus.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // TODO
+            }
+        });
+
+        TextField inputChangePicture = new TextField();
+
+        Button buttonChangePicture = new Button("Change Picture");
+        setHeightWidthToFit(buttonChangePicture);
+        buttonChangePicture.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // TODO
+            }
+        });
+
+        TextField inputAddFriend = new TextField();
+
+        Button buttonAddFriend = new Button("Add Friend");
+        setHeightWidthToFit(buttonAddFriend);
+        buttonAddFriend.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // TODO
+            }
+        });
+
+        leftPane.getChildren().addAll(inputChangeStatus, buttonChangeStatus, inputChangePicture, buttonChangePicture,
+                inputAddFriend, buttonAddFriend);
+
+        return leftPane;
+    }
+
+    private void setHeightWidthToFit(Region region) {
+        region.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     }
 
     private Pane createCenterPane() {

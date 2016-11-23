@@ -133,6 +133,7 @@ public class FacePamphletCanvas implements FacePamphletConstants {
                 // TODO
             }
         });
+        VBox.setMargin(buttonChangeStatus, new Insets(0, 0, 20, 0));
 
         TextField inputChangePicture = new TextField();
         inputChangePicture.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -152,6 +153,7 @@ public class FacePamphletCanvas implements FacePamphletConstants {
                 // TODO
             }
         });
+        VBox.setMargin(buttonChangePicture, new Insets(0, 0, 20, 0));
 
         TextField inputAddFriend = new TextField();
         inputAddFriend.setOnKeyPressed(new EventHandler<KeyEvent>() {

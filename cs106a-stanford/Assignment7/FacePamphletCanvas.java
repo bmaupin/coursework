@@ -14,6 +14,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -48,16 +50,20 @@ public class FacePamphletCanvas implements FacePamphletConstants {
 
     private HBox createTopPane() {
         HBox topPane = new HBox();
-        topPane.setPadding(new Insets(15, 12, 15, 12));
-        topPane.setSpacing(10);
-        topPane.setAlignment(Pos.CENTER);
 
-        addComponentsToBottomPane(topPane);
+        styleTopPane(topPane);
+        addComponentsToTopPane(topPane);
 
         return topPane;
     }
 
-    private void addComponentsToBottomPane(HBox bottomPane) {
+    private void styleTopPane(HBox topPane) {
+        topPane.setPadding(new Insets(15, 12, 15, 12));
+        topPane.setSpacing(10);
+        topPane.setAlignment(Pos.CENTER);
+    }
+
+    private void addComponentsToTopPane(HBox topPane) {
         Text nameLabel = new Text("Name");
 
         TextField nameInput = new TextField();
@@ -89,17 +95,35 @@ public class FacePamphletCanvas implements FacePamphletConstants {
             }
         });
 
-        bottomPane.getChildren().addAll(nameLabel, nameInput, buttonAdd, buttonDelete, buttonLookup);
+        topPane.getChildren().addAll(nameLabel, nameInput, buttonAdd, buttonDelete, buttonLookup);
     }
 
     private VBox createLeftPane() {
         VBox leftPane = new VBox();
+
+        styleLeftPane(leftPane);
+        addComponentsToLeftPane(leftPane);
+
+        return leftPane;
+    }
+
+    private void styleLeftPane(VBox leftPane) {
         leftPane.setPadding(new Insets(15, 12, 15, 12));
         leftPane.setSpacing(10);
         leftPane.setPrefHeight(APPLICATION_HEIGHT);
         leftPane.setAlignment(Pos.CENTER);
+    }
 
+    private void addComponentsToLeftPane(VBox leftPane) {
         TextField inputChangeStatus = new TextField();
+        inputChangeStatus.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                    // TODO
+                }
+            }
+        });
 
         Button buttonChangeStatus = new Button("Change Status");
         setHeightWidthToFit(buttonChangeStatus);
@@ -111,6 +135,14 @@ public class FacePamphletCanvas implements FacePamphletConstants {
         });
 
         TextField inputChangePicture = new TextField();
+        inputChangePicture.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                    // TODO
+                }
+            }
+        });
 
         Button buttonChangePicture = new Button("Change Picture");
         setHeightWidthToFit(buttonChangePicture);
@@ -122,6 +154,14 @@ public class FacePamphletCanvas implements FacePamphletConstants {
         });
 
         TextField inputAddFriend = new TextField();
+        inputAddFriend.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent keyEvent) {
+                if (keyEvent.getCode().equals(KeyCode.ENTER)) {
+                    // TODO
+                }
+            }
+        });
 
         Button buttonAddFriend = new Button("Add Friend");
         setHeightWidthToFit(buttonAddFriend);
@@ -134,8 +174,6 @@ public class FacePamphletCanvas implements FacePamphletConstants {
 
         leftPane.getChildren().addAll(inputChangeStatus, buttonChangeStatus, inputChangePicture, buttonChangePicture,
                 inputAddFriend, buttonAddFriend);
-
-        return leftPane;
     }
 
     private void setHeightWidthToFit(Region region) {

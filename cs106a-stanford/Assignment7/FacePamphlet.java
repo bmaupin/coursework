@@ -23,8 +23,9 @@ import javafx.stage.Stage;
  * management system.
  */
 
-public class FacePamphlet extends Application
-        implements FacePamphletConstants {
+public class FacePamphlet extends Application implements FacePamphletConstants {
+    private FacePamphletProfile currentProfile;
+    private FacePamphletDatabase database;
 
     public static void main(String[] args) {
         launch(args);
@@ -32,7 +33,12 @@ public class FacePamphlet extends Application
 
     @Override
     public void start(Stage primaryStage) {
+        setUpDatabase();
         setUpUi(primaryStage);
+    }
+
+    private void setUpDatabase() {
+        database = new FacePamphletDatabase();
     }
 
     private void setUpUi(Stage primaryStage) {
@@ -69,16 +75,16 @@ public class FacePamphlet extends Application
     }
 
     private void addComponentsToTopPane(HBox topPane) {
-        Text nameLabel = new Text("Name");
+        Text labelName = new Text("Name");
 
-        TextField nameInput = new TextField();
+        TextField inputName = new TextField();
 
         Button buttonAdd = new Button("Add");
         buttonAdd.setPrefSize(100, 20);
         buttonAdd.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                // TODO
+                addProfile(inputName.getText());
             }
         });
 
@@ -87,7 +93,7 @@ public class FacePamphlet extends Application
         buttonDelete.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                // TODO
+                deleteProfile(inputName.getText());
             }
         });
 
@@ -96,11 +102,11 @@ public class FacePamphlet extends Application
         buttonLookup.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                // TODO
+                lookupProfile(inputName.getText());
             }
         });
 
-        topPane.getChildren().addAll(nameLabel, nameInput, buttonAdd, buttonDelete, buttonLookup);
+        topPane.getChildren().addAll(labelName, inputName, buttonAdd, buttonDelete, buttonLookup);
     }
 
     private VBox createLeftPane() {
@@ -198,23 +204,71 @@ public class FacePamphlet extends Application
         pane.setStyle("-fx-background-color: white");
     }
 
-    // /**
-    // * This method has the responsibility for initializing the interactors in
-    // * the application, and taking care of any other initialization that needs
-    // * to be performed.
-    // */
-    // @Override
-    // public void init() {
-    // // You fill this in
-    // }
-    //
-    // /**
-    // * This class is responsible for detecting when the buttons are
-    // * clicked or interactors are used, so you will have to add code
-    // * to respond to these actions.
-    // */
-    // public void actionPerformed(ActionEvent e) {
-    // // You fill this in as well as add any additional methods
-    // }
+    private void addProfile(String profileName) {
+        if (database.containsProfile(profileName)) {
+            currentProfile = database.getProfile(profileName);
 
+        } else {
+            FacePamphletProfile profile = new FacePamphletProfile(profileName);
+            currentProfile = profile;
+        }
+
+        // TODO: show the current profile
+    }
+
+    private void deleteProfile(String profileName) {
+        database.deleteProfile(profileName);
+        currentProfile = null;
+
+        // TODO: clear the current profile
+    }
+
+    private void lookupProfile(String profileName) {
+        if (database.containsProfile(profileName)) {
+            currentProfile = database.getProfile(profileName);
+
+        } else {
+            currentProfile = null;
+        }
+
+        // TODO: show the current profile
+    }
+
+    private void changeStatus(String status) {
+        if (currentProfile != null) {
+            currentProfile.setStatus(status);
+
+        } else {
+            // TODO: prompt the user to select a profile
+        }
+    }
+
+    private void changePicture(String filename) {
+        // TODO
+    }
+
+    private void addFriend(String friendName) {
+        if (currentProfile != null) {
+            if (database.containsProfile(friendName)) {
+                if (currentProfile.addFriend(friendName)) {
+                    database.getProfile(friendName).addFriend(currentProfile.getName());
+
+                } else {
+                    // TODO: If the named friend already exists in the list of
+                    // friends for the current profile, then we simply write out
+                    // a message that such a friend already exists.
+                }
+            } else {
+                // TODO: If the name entered in the Add Friend text field is not
+                // a
+                // valid profile in the system, we should just print out a
+                // message
+                // to that effect.
+            }
+        } else {
+            // TODO: If there is no current profile, then you should simply
+            // prompt the user to select a profile to add a friend to (and there
+            // should be no changes to any of the profiles in the database).
+        }
+    }
 }

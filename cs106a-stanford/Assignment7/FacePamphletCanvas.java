@@ -1,3 +1,7 @@
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+
 /*
  * File: FacePamphletCanvas.java
  * -----------------------------
@@ -6,14 +10,23 @@
  * display when the window is resized.
  */
 
-public class FacePamphletCanvas implements FacePamphletConstants {
+// This isn't really a canvas but we'll keep the class name to stay as close to the assignment as possible
+public class FacePamphletCanvas extends VBox implements FacePamphletConstants {
+    private Text messageLabel;
 
     /**
      * Constructor This method takes care of any initialization needed for the
      * display
      */
     public FacePamphletCanvas() {
-        // You fill this in
+        HBox topPamphletPane = new HBox();
+        messageLabel = new Text();
+
+        this.getChildren().addAll(topPamphletPane, messageLabel);
+    }
+
+    private HBox createTopPamphletPane() {
+        return new HBox();
     }
 
     /**
@@ -22,7 +35,7 @@ public class FacePamphletCanvas implements FacePamphletConstants {
      * any) is replaced by the new message text passed in.
      */
     public void showMessage(String msg) {
-        // You fill this in
+        messageLabel.setText(msg);
     }
 
     /**

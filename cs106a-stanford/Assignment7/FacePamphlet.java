@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 public class FacePamphlet extends Application implements FacePamphletConstants {
     private FacePamphletProfile currentProfile;
     private FacePamphletDatabase database;
+    private FacePamphletCanvas profilePane;
 
     public static void main(String[] args) {
         launch(args);
@@ -51,8 +52,8 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
         VBox leftPane = createLeftPane();
         parentPane.setLeft(leftPane);
 
-        Pane mainPane = createCenterPane();
-        parentPane.setCenter(mainPane);
+        profilePane = createProfilePane();
+        parentPane.setCenter(profilePane);
 
         Scene scene = new Scene(parentPane);
         primaryStage.setScene(scene);
@@ -131,7 +132,7 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
             @Override
             public void handle(KeyEvent keyEvent) {
                 if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                    // TODO
+                    changeStatus(inputChangeStatus.getText());
                 }
             }
         });
@@ -141,7 +142,7 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
         buttonChangeStatus.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                // TODO
+                changeStatus(inputChangeStatus.getText());
             }
         });
         VBox.setMargin(buttonChangeStatus, new Insets(0, 0, 20, 0));
@@ -151,7 +152,7 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
             @Override
             public void handle(KeyEvent keyEvent) {
                 if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                    // TODO
+                    changePicture(inputChangePicture.getText());
                 }
             }
         });
@@ -161,7 +162,7 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
         buttonChangePicture.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                // TODO
+                changePicture(inputChangePicture.getText());
             }
         });
         VBox.setMargin(buttonChangePicture, new Insets(0, 0, 20, 0));
@@ -171,7 +172,7 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
             @Override
             public void handle(KeyEvent keyEvent) {
                 if (keyEvent.getCode().equals(KeyCode.ENTER)) {
-                    // TODO
+                    addFriend(inputAddFriend.getText());
                 }
             }
         });
@@ -181,7 +182,7 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
         buttonAddFriend.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                // TODO
+                addFriend(inputAddFriend.getText());
             }
         });
 
@@ -193,11 +194,11 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
         region.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     }
 
-    private Pane createCenterPane() {
-        Pane centerPane = new Pane();
-        setWhiteBackground(centerPane);
+    private FacePamphletCanvas createProfilePane() {
+        FacePamphletCanvas profilePane = new FacePamphletCanvas();
+        setWhiteBackground(profilePane);
 
-        return centerPane;
+        return profilePane;
     }
 
     private void setWhiteBackground(Pane pane) {
@@ -239,7 +240,7 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
             currentProfile.setStatus(status);
 
         } else {
-            // TODO: prompt the user to select a profile
+            profilePane.showMessage("Please select a profile to change status");
         }
     }
 
@@ -254,21 +255,14 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
                     database.getProfile(friendName).addFriend(currentProfile.getName());
 
                 } else {
-                    // TODO: If the named friend already exists in the list of
-                    // friends for the current profile, then we simply write out
-                    // a message that such a friend already exists.
+                    profilePane.showMessage(
+                            String.format("%s already has %s as a friend", currentProfile.getName(), friendName));
                 }
             } else {
-                // TODO: If the name entered in the Add Friend text field is not
-                // a
-                // valid profile in the system, we should just print out a
-                // message
-                // to that effect.
+                profilePane.showMessage(String.format("%s does not exist", friendName));
             }
         } else {
-            // TODO: If there is no current profile, then you should simply
-            // prompt the user to select a profile to add a friend to (and there
-            // should be no changes to any of the profiles in the database).
+            profilePane.showMessage("Please select a profile to add friend");
         }
     }
 }

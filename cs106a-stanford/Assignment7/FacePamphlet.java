@@ -26,7 +26,7 @@ import javafx.stage.Stage;
 public class FacePamphlet extends Application implements FacePamphletConstants {
     private FacePamphletProfile currentProfile;
     private FacePamphletDatabase database;
-    private FacePamphletCanvas profilePane;
+    private FacePamphletCanvas mainPane;
 
     public static void main(String[] args) {
         launch(args);
@@ -52,8 +52,8 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
         VBox leftPane = createLeftPane();
         parentPane.setLeft(leftPane);
 
-        profilePane = createProfilePane();
-        parentPane.setCenter(profilePane);
+        mainPane = createMainPane();
+        parentPane.setCenter(mainPane);
 
         Scene scene = new Scene(parentPane);
         primaryStage.setScene(scene);
@@ -194,11 +194,11 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
         region.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
     }
 
-    private FacePamphletCanvas createProfilePane() {
-        FacePamphletCanvas profilePane = new FacePamphletCanvas();
-        setWhiteBackground(profilePane);
+    private FacePamphletCanvas createMainPane() {
+        FacePamphletCanvas mainPane = new FacePamphletCanvas();
+        setWhiteBackground(mainPane);
 
-        return profilePane;
+        return mainPane;
     }
 
     private void setWhiteBackground(Pane pane) {
@@ -211,36 +211,47 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
 
         } else {
             FacePamphletProfile profile = new FacePamphletProfile(profileName);
+            database.addProfile(profile);
             currentProfile = profile;
         }
 
-        // TODO: show the current profile
+        mainPane.displayProfile(currentProfile);
     }
 
     private void deleteProfile(String profileName) {
-        database.deleteProfile(profileName);
-        currentProfile = null;
+        if (database.containsProfile(profileName)) {
+            database.deleteProfile(profileName);
+            mainPane.showMessage(String.format("Profile of %s deleted", profileName));
 
-        // TODO: clear the current profile
+        } else {
+            mainPane.showMessage(String.format("A profile with the name %s does not exist", profileName));
+        }
+
+        currentProfile = null;
+        mainPane.clearProfile();
     }
 
     private void lookupProfile(String profileName) {
         if (database.containsProfile(profileName)) {
             currentProfile = database.getProfile(profileName);
+            mainPane.displayProfile(currentProfile);
+            mainPane.showMessage(String.format("Displaying %s", profileName));
 
         } else {
             currentProfile = null;
+            mainPane.clearProfile();
+            mainPane.showMessage(String.format("A profile with the name %s does not exist", profileName));
         }
-
-        // TODO: show the current profile
     }
 
     private void changeStatus(String status) {
         if (currentProfile != null) {
             currentProfile.setStatus(status);
+            mainPane.displayProfile(currentProfile);
+            mainPane.showMessage(String.format("Status updated to %s", status));
 
         } else {
-            profilePane.showMessage("Please select a profile to change status");
+            mainPane.showMessage("Please select a profile to change status");
         }
     }
 
@@ -253,16 +264,17 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
             if (database.containsProfile(friendName)) {
                 if (currentProfile.addFriend(friendName)) {
                     database.getProfile(friendName).addFriend(currentProfile.getName());
+                    mainPane.displayProfile(currentProfile);
 
                 } else {
-                    profilePane.showMessage(
+                    mainPane.showMessage(
                             String.format("%s already has %s as a friend", currentProfile.getName(), friendName));
                 }
             } else {
-                profilePane.showMessage(String.format("%s does not exist", friendName));
+                mainPane.showMessage(String.format("%s does not exist", friendName));
             }
         } else {
-            profilePane.showMessage("Please select a profile to add friend");
+            mainPane.showMessage("Please select a profile to add friend");
         }
     }
 }

@@ -1,6 +1,9 @@
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -23,14 +26,17 @@ public class FacePamphletCanvas extends VBox implements FacePamphletConstants {
     private ImageView profileImage;
     private Text profileNameLabel;
     private Text profileStatusLabel;
-    private Text messageLabel;
+    private Label messageLabel;
 
     /**
      * Constructor This method takes care of any initialization needed for the
      * display
      */
     public FacePamphletCanvas() {
+        // this.setMaxHeight(Double.MAX_VALUE);
+
         HBox topPamphletPane = new HBox();
+
         VBox leftProfilePane = createLeftProfilePane();
 
         profileFriendsList = new Text();
@@ -38,8 +44,14 @@ public class FacePamphletCanvas extends VBox implements FacePamphletConstants {
 
         topPamphletPane.getChildren().addAll(leftProfilePane, profileFriendsList);
 
-        messageLabel = new Text();
+        messageLabel = new Label();
         messageLabel.setFont(new Font(MESSAGE_FONT_SIZE));
+        // messageLabel.setMaxHeight(Double.MAX_VALUE);
+        // messageLabel.setMaxWidth(Double.MAX_VALUE);
+        // messageLabel.setAlignment(Pos.BOTTOM_CENTER);
+        // messageLabel.setContentDisplay(ContentDisplay.BOTTOM);
+
+        // TODO: add bottom margin
 
         this.getChildren().addAll(topPamphletPane, messageLabel);
     }
@@ -49,10 +61,17 @@ public class FacePamphletCanvas extends VBox implements FacePamphletConstants {
 
         profileNameLabel = new Text();
         profileNameLabel.setFont(new Font(PROFILE_NAME_FONT_SIZE));
+        profileNameLabel.setFill(Color.BLUE);
+        VBox.setMargin(profileNameLabel, new Insets(TOP_MARGIN, 0, 0, LEFT_MARGIN));
 
         profileImage = new ImageView();
+        profileImage.setFitHeight(IMAGE_HEIGHT);
+        profileImage.setFitWidth(IMAGE_WIDTH);
+        VBox.setMargin(profileImage, new Insets(IMAGE_MARGIN, 0, 0, LEFT_MARGIN));
+
         profileStatusLabel = new Text();
         profileStatusLabel.setFont(new Font(PROFILE_STATUS_FONT_SIZE));
+        VBox.setMargin(profileStatusLabel, new Insets(STATUS_MARGIN, 0, 0, LEFT_MARGIN));
 
         leftProfilePane.getChildren().addAll(profileNameLabel, profileImage, profileStatusLabel);
 
@@ -82,8 +101,8 @@ public class FacePamphletCanvas extends VBox implements FacePamphletConstants {
 
         profileNameLabel.setText(profile.getName());
         profileStatusLabel.setText(profile.getStatus());
+        profileImage.setImage(profile.getImage());
 
-        // TODO: show image
         // TODO: show friends
     }
 

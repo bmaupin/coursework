@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -256,7 +257,20 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
     }
 
     private void changePicture(String filename) {
-        // TODO
+        if (currentProfile != null) {
+            try {
+                Image profileImage = new Image(String.format("images/%s", filename));
+                currentProfile.setImage(profileImage);
+                mainPane.displayProfile(currentProfile);
+                mainPane.showMessage("Picture updated");
+
+            } catch (IllegalArgumentException e) {
+                mainPane.showMessage(String.format("Unable to open image file: %s", filename));
+            }
+
+        } else {
+            mainPane.showMessage("Please select a profile to change picture");
+        }
     }
 
     private void addFriend(String friendName) {

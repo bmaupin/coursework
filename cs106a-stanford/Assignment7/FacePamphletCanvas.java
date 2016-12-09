@@ -6,7 +6,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -66,6 +65,10 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
         VBox leftProfilePane = createLeftProfilePane();
         VBox rightProfilePane = createRightProfilePane();
 
+        // Make sure center pane child panes are the same width
+        leftProfilePane.prefWidthProperty().bind(centerProfilePane.widthProperty().divide(2));
+        rightProfilePane.prefWidthProperty().bind(centerProfilePane.widthProperty().divide(2));
+
         centerProfilePane.getChildren().addAll(leftProfilePane, rightProfilePane);
 
         return centerProfilePane;
@@ -73,8 +76,6 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
 
     private VBox createLeftProfilePane() {
         VBox leftProfilePane = new VBox();
-        HBox.setHgrow(leftProfilePane, Priority.ALWAYS);
-        leftProfilePane.setMaxWidth(Double.MAX_VALUE);
 
         profileImage = new ImageView();
         profileImage.setFitHeight(IMAGE_HEIGHT);
@@ -87,16 +88,11 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
 
         leftProfilePane.getChildren().addAll(profileImage, profileStatusLabel);
 
-        // TODO fix width
-        leftProfilePane.setStyle("-fx-background-color: yellow");
-
         return leftProfilePane;
     }
 
     private VBox createRightProfilePane() {
         VBox rightProfilePane = new VBox();
-        HBox.setHgrow(rightProfilePane, Priority.ALWAYS);
-        rightProfilePane.setMaxWidth(Double.MAX_VALUE);
 
         profileFriendsLabel = new Text();
         profileFriendsLabel.setFont(new Font(PROFILE_FRIENDS_LABEL_FONT_SIZE));
@@ -106,9 +102,6 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
         profileFriendsList.setFont(new Font(PROFILE_FRIENDS_LIST_FONT_SIZE));
 
         rightProfilePane.getChildren().addAll(profileFriendsLabel, profileFriendsList);
-
-        // TODO fix width
-        rightProfilePane.setStyle("-fx-background-color: orange");
 
         return rightProfilePane;
     }

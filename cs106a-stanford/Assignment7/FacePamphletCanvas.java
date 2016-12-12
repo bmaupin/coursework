@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -45,8 +46,8 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
         HBox centerProfilePane = createCenterProfilePane();
         this.setCenter(centerProfilePane);
 
-        messageLabel = createMessageLabel();
-        this.setBottom(messageLabel);
+        HBox messagePane = createMessagePane();
+        this.setBottom(messagePane);
     }
 
     private Text createProfileNameLabel() {
@@ -84,6 +85,7 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
 
         profileStatusLabel = new Text();
         profileStatusLabel.setFont(new Font(PROFILE_STATUS_FONT_SIZE));
+        profileStatusLabel.setStyle("-fx-font-weight: bold");
         VBox.setMargin(profileStatusLabel, new Insets(STATUS_MARGIN, 0, 0, 0));
 
         leftProfilePane.getChildren().addAll(profileImage, profileStatusLabel);
@@ -106,11 +108,20 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
         return rightProfilePane;
     }
 
+    private HBox createMessagePane() {
+        HBox messagePane = new HBox();
+        messagePane.setAlignment(Pos.CENTER);
+        BorderPane.setMargin(messagePane, new Insets(0, 0, BOTTOM_MESSAGE_MARGIN, LEFT_MARGIN));
+
+        messageLabel = createMessageLabel();
+        messagePane.getChildren().addAll(messageLabel);
+
+        return messagePane;
+    }
+
     private Label createMessageLabel() {
         Label messageLabel = new Label();
         messageLabel.setFont(new Font(MESSAGE_FONT_SIZE));
-
-        BorderPane.setMargin(messageLabel, new Insets(0, 0, BOTTOM_MESSAGE_MARGIN, LEFT_MARGIN));
 
         return messageLabel;
     }
@@ -134,13 +145,12 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
      * network.
      */
     public void displayProfile(FacePamphletProfile profile) {
-        showMessage("");
-
         profileNameLabel.setText(profile.getName());
-        profileStatusLabel.setText(profile.getStatus());
+        // TODO: show image placeholder
         profileImage.setImage(profile.getImage());
 
         displayFriends(profile);
+        displayStatus(profile);
     }
 
     private void displayFriends(FacePamphletProfile profile) {
@@ -149,6 +159,14 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
         List<String> friendsList = new ArrayList<String>();
         profile.getFriends().forEachRemaining(friendsList::add);
         profileFriendsList.setText(String.join("\n", friendsList));
+    }
+
+    private void displayStatus(FacePamphletProfile profile) {
+        if (profile.getStatus().equals("")) {
+            profileStatusLabel.setText("No current status");
+        } else {
+            profileStatusLabel.setText(String.format("%s is %s", profile.getName(), profile.getStatus()));
+        }
     }
 
     public void clearProfile() {

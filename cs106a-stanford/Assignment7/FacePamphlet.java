@@ -209,11 +209,13 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
     private void addProfile(String profileName) {
         if (database.containsProfile(profileName)) {
             currentProfile = database.getProfile(profileName);
+            mainPane.showMessage(String.format("A profile with the name %s already exists", profileName));
 
         } else {
             FacePamphletProfile profile = new FacePamphletProfile(profileName);
             database.addProfile(profile);
             currentProfile = profile;
+            mainPane.showMessage("New profile created");
         }
 
         mainPane.displayProfile(currentProfile);
@@ -279,6 +281,7 @@ public class FacePamphlet extends Application implements FacePamphletConstants {
                 if (currentProfile.addFriend(friendName)) {
                     database.getProfile(friendName).addFriend(currentProfile.getName());
                     mainPane.displayProfile(currentProfile);
+                    mainPane.showMessage(String.format("%s added as a friend", friendName));
 
                 } else {
                     mainPane.showMessage(

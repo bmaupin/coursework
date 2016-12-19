@@ -5,8 +5,15 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -23,6 +30,7 @@ import javafx.scene.text.Text;
 // This isn't really a canvas but we'll keep the class name to stay as close to the assignment as possible
 public class FacePamphletCanvas extends BorderPane implements FacePamphletConstants {
     private static final int MESSAGE_FONT_SIZE = 18;
+    private static final int PROFILE_IMAGE_FONT_SIZE = 24;
     private static final int PROFILE_NAME_FONT_SIZE = 24;
     private static final int PROFILE_FRIENDS_LABEL_FONT_SIZE = 16;
     private static final int PROFILE_FRIENDS_LIST_FONT_SIZE = 16;
@@ -30,7 +38,7 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
 
     private Text profileFriendsLabel;
     private Text profileFriendsList;
-    private ImageView profileImage;
+    private Pane profileImage;
     private Text profileNameLabel;
     private Text profileStatusLabel;
     private Label messageLabel;
@@ -78,9 +86,11 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
     private VBox createLeftProfilePane() {
         VBox leftProfilePane = new VBox();
 
-        profileImage = new ImageView();
-        profileImage.setFitHeight(IMAGE_HEIGHT);
-        profileImage.setFitWidth(IMAGE_WIDTH);
+        profileImage = new Pane();
+        profileImage.setPrefHeight(IMAGE_HEIGHT);
+        profileImage.setPrefWidth(IMAGE_WIDTH);
+        profileImage.setMaxHeight(IMAGE_HEIGHT);
+        profileImage.setMaxWidth(IMAGE_WIDTH);
         VBox.setMargin(profileImage, new Insets(IMAGE_MARGIN, 0, 0, 0));
 
         profileStatusLabel = new Text();
@@ -145,11 +155,9 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
      * network.
      */
     public void displayProfile(FacePamphletProfile profile) {
-        profileNameLabel.setText(profile.getName());
-        // TODO: show image placeholder
-        profileImage.setImage(profile.getImage());
-
         displayFriends(profile);
+        displayImage(profile);
+        displayName(profile);
         displayStatus(profile);
     }
 
@@ -159,6 +167,40 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
         List<String> friendsList = new ArrayList<String>();
         profile.getFriends().forEachRemaining(friendsList::add);
         profileFriendsList.setText(String.join("\n", friendsList));
+    }
+
+    private void displayImage(FacePamphletProfile profile) {
+        clearImage();
+        if (profile.getImage() == null) {
+            profileImage.setBorder(new Border(
+                    new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+
+            final Text textNode = new Text("No Image");
+            textNode.setFont(new Font(PROFILE_IMAGE_FONT_SIZE));
+
+            StackPane stackPane = new StackPane();
+            stackPane.setPrefSize(IMAGE_WIDTH, IMAGE_HEIGHT);
+            stackPane.getChildren().add(textNode);
+
+            profileImage.getChildren().add(stackPane);
+
+        } else {
+            ImageView imageView = new ImageView();
+            imageView.setFitHeight(IMAGE_HEIGHT);
+            imageView.setFitWidth(IMAGE_WIDTH);
+
+            imageView.setImage(profile.getImage());
+            profileImage.getChildren().add(imageView);
+        }
+    }
+
+    private void clearImage() {
+        profileImage.getChildren().clear();
+        profileImage.setBorder(null);
+    }
+
+    private void displayName(FacePamphletProfile profile) {
+        profileNameLabel.setText(profile.getName());
     }
 
     private void displayStatus(FacePamphletProfile profile) {
@@ -172,7 +214,7 @@ public class FacePamphletCanvas extends BorderPane implements FacePamphletConsta
     public void clearProfile() {
         profileFriendsLabel.setText("");
         profileFriendsList.setText("");
-        profileImage.setImage(null);
+        clearImage();
         profileNameLabel.setText("");
         profileStatusLabel.setText("");
     }
